@@ -1,3 +1,4 @@
+// Colors library
 const { green, greenBold, greenItalic,
   greenHighlight, greenUnderlined, greenOut,
   red, redBold, redItalic,
@@ -9,14 +10,31 @@ const { green, greenBold, greenItalic,
   yellowUnderlined, yellowOut,
   bold, italic, highlight,
   underlined, whiteOut } = require('../../color');
-const { api, field, subfield, depthLimit } = require('../../qevlarConfig.json')
+const fs = require('fs');
+const path = require('path');
+
+
+// Get config file
+const configPath = path.resolve(__dirname, '../../qevlarConfig.json');
+// Read config file
+let config = {};
+try {
+  const configFile = fs.readFileSync(configPath, 'utf8');
+  // Set config object
+  config = JSON.parse(configFile);
+} catch (error) {
+  console.error('Error reading config file:', error);
+}
+
 
 const depthLimitTest = {};
 
-//fixed query depth of 8
+//FIXED query depth
 depthLimitTest.fixed = () => {
+  // Get config file
+  const config = getConfig();
 
-  fetch(api, {
+  fetch(config.API_URL, {
     method: 'POST',
     headers: {
       "content-type": "application/json"
@@ -62,25 +80,27 @@ depthLimitTest.fixed = () => {
     })
 }
 
+//DYNAMIC query depth (from config value)
 depthLimitTest.dynamic = () => {
-  //create query body dynamically based on depth input
+  // Get config file
+
+
+  //create query body based on depth limit
   function setDynamicQueryBody() {
     let dynamicQueryBody = '';
-    let depth = depthLimit;
+    let depth = config.QUERY_DEPTH_LIMIT;
     let endOfQuery = 'id';
     while (depth > 0) {
-      // `${field} {${subfield} {id}}`
-      dynamicQueryBody += `${field} {${subfield} {`; //field and subfield from config
+      dynamicQueryBody += `${config.TOP_FIELD} {${config.SUB_FIELD} {`; //field and subfield from config
       endOfQuery += '}}';
       depth--;
     }
     return dynamicQueryBody + endOfQuery;
   }
   const dynamicQueryBody = setDynamicQueryBody();
-  console.log('QUERY----> ', dynamicQueryBody);
 
   //make fetch
-  fetch(api, {
+  fetch(config.API_URL, {
     method: 'POST',
     headers: {
       "content-type": "application/json"
@@ -96,12 +116,17 @@ depthLimitTest.dynamic = () => {
     // .then((res) => console.log(res))
     .then((res) => {
       if (res.status < 200 || res.status > 299) {
-        console.log(greenBold('Test passed: ') + highlight(`Query depth limited above ${depthLimit} queries.`));
+        console.log(greenBold('Test passed: ') + highlight(`Query depth limited above ${config.QUERY_DEPTH_LIMIT} queries.`));
       }
-      else console.log(redBold('Test failed: ') + highlight(`Query depth not limited below ${depthLimit}.`));
+      else console.log(redBold('Test failed: ') + highlight(`Query depth not limited below ${config.QUERY_DEPTH_LIMIT}.`));
     })
 
 }
 
 // depthLimitTest.fixed();
-depthLimitTest.dynamic();
+// depthLimitTest.dynamic();
+
+module.exports = {
+  depthLimitTest,
+  getConfig: () => config
+}
