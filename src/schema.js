@@ -198,8 +198,9 @@ const schema = new GraphQLSchema({
   mutation: RootMutationType
 })
 
-app.use('/graphql', qevlarSecurity.staticQA, graphqlHTTP({
+app.use('/graphql', graphqlHTTP({
   schema: schema,
+  validationRules: [qevlarSecurity.staticQA]
   // graphiql: true,
 }))
 
