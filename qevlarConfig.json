@@ -1,0 +1,8 @@
+{
+  "api": "http://localhost:5000/graphql",
+  "field": "house",
+  "subfield": "charactersInHouse",
+  "queryLimit": 50,
+  "window": 1000,
+  "depthLimit": 100
+}
