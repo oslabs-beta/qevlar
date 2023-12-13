@@ -9,29 +9,8 @@ const { green, greenBold, greenItalic,
   yellowUnderlined, yellowOut,
   bold, italic, highlight,
   underlined, whiteOut } = require('../../color');
-const fs = require('fs');
-const path = require('path');
+const { depthLimitTest } = require('./depthLimitTests');
 
-let config = {
-  field: 'name',
-  queryLimit: 15,
-  window: 1000
-}
-
-const configFilePath = path.resolve(__dirname, '../../qevlarConfig.json');
-
-function loadConfig(configFilePath) {
-
-  try {
-    const userConfig = JSON.parse(fs.readFileSync(configFilePath));
-    config = { ...config, ...userConfig }; //update config with user settings
-  }
-
-  catch (error) {
-    console.error('Error reading or parsing qevlar config file.', error);
-  }
-
-}
 const library = {};
 
 library.basicFetch = (field) => {
@@ -136,9 +115,9 @@ library.nestedFetch2 = () => {
     .then((res) => JSON.stringify(res))
     .then((res) => console.log(res));
 }
-// library.dosCountTests("books", 15);
-// library.basicFetch("books");
-// library.basicTest("books");
-library.nestedFetch2();
 
-module.exports = { library, loadConfig };
+depthLimitTest.dynamic();
+
+module.exports = {
+  library,
+};

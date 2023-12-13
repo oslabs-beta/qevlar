@@ -1,7 +1,7 @@
 const app = require('express')();
 const { expressGraphQL, graphqlHTTP } = require('express-graphql');
 const { books, authors, characters, houses } = require('./db.js');
-const qevlarSecurity = require('./qevlarSecurity.js');
+const { qevlarSecurity } = require('./qevlarSecurity.js');
 const {
   GraphQLSchema,
   GraphQLObjectType,
