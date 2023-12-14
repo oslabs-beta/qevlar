@@ -1,7 +1,7 @@
 const app = require('express')();
 const { expressGraphQL, graphqlHTTP } = require('express-graphql');
 const { books, authors, characters, houses } = require('./db.js');
-const { qevlarSecurity } = require('./qevlarSecurity.js');
+const qevlarSecurity = require('./qevlarSecurity.js');
 const {
   GraphQLSchema,
   GraphQLObjectType,
@@ -213,7 +213,7 @@ const schema = new GraphQLSchema({
 // ** TRY ANOTHER APP USE HERE WITH JUST MIDDLEWARE
 // app.use(qevlarSecurity.staticQA);
 
-app.use('/graphql', graphqlHTTP({
+app.use('/graphql', qevlarSecurity.staticQA, graphqlHTTP({
   schema: schema,
   // graphiql: true,
 }))
