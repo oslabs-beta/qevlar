@@ -1,5 +1,5 @@
 //create function for batch queries
-const url = '/graphql';
+const url = 'http://localhost:3000/graphql';
 const mealQuery = `{
   meals {
     id
@@ -28,7 +28,7 @@ const generateDynamicBatchQuery = (count, baseQuery) => {
   return batchQueries;
 };
 
-const batchTest = (num, q) => {
+const batchTest = (num, q, returnToTestMenu) => {
   const newBatch = generateDynamicBatchQuery(num, q);
 
   fetch(url, {
@@ -39,15 +39,21 @@ const batchTest = (num, q) => {
     },
     body: JSON.stringify(newBatch),
   })
-    .then((response) => {
-      console.log('response', response);
+    .then(async (response) => {
+      console.log('res status', response.status);
+      console.log('res headers', response.headers);
+      const responseBody = await response.text();
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      return response.json();
+      return responseBody;
     })
-    .then((data) => console.log(data))
-    .catch((error) => console.error('Error:', error));
+    .then((data) => console.log('data', data))
+    .catch((error) =>
+      console.error('Error:', error.message, 'stack', error.stack)
+    );
+
+  if (returnToTestMenu) returnToTestMenu();
 };
 
 // Call the batchTest function

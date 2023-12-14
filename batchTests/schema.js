@@ -12,6 +12,33 @@ const db = require('./_db.js');
 // console.log('food', db.foods);
 // console.log('cat', db.categories);
 // console.log('chefs', db.chefs);
+const ChefType = new GraphQLObjectType({
+  //name
+  name: 'Chefs',
+  //description
+  description: 'Cooks of the meals',
+  //fields
+  fields: () => ({
+    //id
+    id: { type: new GraphQLNonNull(GraphQLInt) },
+    //name
+    name: { type: new GraphQLNonNull(GraphQLString) },
+  }),
+});
+
+const CategoryType = new GraphQLObjectType({
+  //name
+  name: 'Categories',
+  //description
+  description: 'Meal categories',
+  //fields
+  fields: () => ({
+    //id
+    id: { type: new GraphQLNonNull(GraphQLInt) },
+    //meal
+    meal: { type: new GraphQLNonNull(GraphQLString) },
+  }),
+});
 
 // //create type for each array of objects
 const FoodType = new GraphQLObjectType({
@@ -55,34 +82,6 @@ const FoodType = new GraphQLObjectType({
         return db.categories.find((category) => category.id === cat.categoryId);
       },
     },
-  }),
-});
-
-const CategoryType = new GraphQLObjectType({
-  //name
-  name: 'Categories',
-  //description
-  description: 'Meal categories',
-  //fields
-  fields: () => ({
-    //id
-    id: { type: new GraphQLNonNull(GraphQLInt) },
-    //meal
-    meal: { type: new GraphQLNonNull(GraphQLString) },
-  }),
-});
-
-const ChefType = new GraphQLObjectType({
-  //name
-  name: 'Chefs',
-  //description
-  description: 'Cooks of the meals',
-  //fields
-  fields: () => ({
-    //id
-    id: { type: new GraphQLNonNull(GraphQLInt) },
-    //name
-    name: { type: new GraphQLNonNull(GraphQLString) },
   }),
 });
 
@@ -168,4 +167,4 @@ const schema = new GraphQLSchema({
   query: RootQueryType,
 });
 
-module.exports = schema;
+module.exports = { schema };
