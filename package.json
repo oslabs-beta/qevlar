@@ -2,9 +2,10 @@
   "name": "graphql",
   "version": "1.0.0",
   "description": "",
-  "main": "../graphql/src/schema.js",
+  "main": "qevlar",
   "scripts": {
-    "start": "nodemon schema.js"
+    "start": "nodemon qevlar",
+    "qevlar": "nodemon qevlar"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +14,7 @@
     "express": "^4.18.2",
     "express-graphql": "^0.12.0",
     "graphql": "^15.8.0",
-    "microfiber": "^2.1.1"
+    "graphql-request": "^6.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
