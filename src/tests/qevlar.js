@@ -116,7 +116,7 @@ library.nestedFetch2 = () => {
     .then((res) => console.log(res));
 }
 
-depthLimitTest.dynamic();
+// depthLimitTest.dynamic();
 
 module.exports = {
   library,

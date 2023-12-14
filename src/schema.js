@@ -198,10 +198,12 @@ const schema = new GraphQLSchema({
   mutation: RootMutationType
 })
 
+// ** TRY ANOTHER APP USE HERE WITH JUST MIDDLEWARE
+// app.use(qevlarSecurity.staticQA);
+
 app.use('/graphql', graphqlHTTP({
   schema: schema,
-  validationRules: [qevlarSecurity.staticQA]
   // graphiql: true,
 }))
 
-app.listen(5000, () => console.log('server running on 5000...'));
+app.listen(3000, () => console.log('server running on 3000...'));

@@ -31,8 +31,6 @@ const depthLimitTest = {};
 
 //FIXED query depth
 depthLimitTest.fixed = () => {
-  // Get config file
-  const config = getConfig();
 
   fetch(config.API_URL, {
     method: 'POST',
@@ -80,6 +78,36 @@ depthLimitTest.fixed = () => {
     })
 }
 
+depthLimitTest.fixed2 = () => {
+
+  fetch(config.API_URL, {
+    method: 'POST',
+    headers: {
+      "content-type": "application/json"
+    },
+    body: JSON.stringify({
+      query: `query getCharacters {
+         author(id: 1) {
+          books {
+            author {
+              id
+            }
+          }
+         }
+       }`
+    })
+  })
+    .then((res) => res.json())
+    .then((res) => JSON.stringify(res))
+    .then((res) => console.log(res))
+  // .then((res) => {
+  //   if (res.status < 200 || res.status > 299) {
+  //     console.log(greenBold('Test passed: ') + highlight('Query depth limited above 7 queries.'));
+  //   }
+  //   else console.log(redBold('Test failed: ') + highlight('Query depth not limited below 9.'));
+  // })
+}
+
 //DYNAMIC query depth (from config value)
 depthLimitTest.dynamic = () => {
   // Get config file
@@ -98,6 +126,7 @@ depthLimitTest.dynamic = () => {
     return dynamicQueryBody + endOfQuery;
   }
   const dynamicQueryBody = setDynamicQueryBody();
+  console.log('QUERY ----->', dynamicQueryBody);
 
   //make fetch
   fetch(config.API_URL, {
@@ -111,19 +140,20 @@ depthLimitTest.dynamic = () => {
        }`
     })
   })
-    // .then((res) => res.json())
-    // .then((res) => JSON.stringify(res))
-    // .then((res) => console.log(res))
-    .then((res) => {
-      if (res.status < 200 || res.status > 299) {
-        console.log(greenBold('Test passed: ') + highlight(`Query depth limited above ${config.QUERY_DEPTH_LIMIT} queries.`));
-      }
-      else console.log(redBold('Test failed: ') + highlight(`Query depth not limited below ${config.QUERY_DEPTH_LIMIT}.`));
-    })
+    .then((res) => res.json())
+    .then((res) => JSON.stringify(res))
+    .then((res) => console.log(res))
+  // .then((res) => {
+  //   if (res.status < 200 || res.status > 299) {
+  //     console.log(greenBold('Test passed: ') + highlight(`Query depth limited above ${config.QUERY_DEPTH_LIMIT} queries.`));
+  //   }
+  //   else console.log(redBold('Test failed: ') + highlight(`Query depth not limited below ${config.QUERY_DEPTH_LIMIT}.`));
+  // })
 
 }
 
 // depthLimitTest.fixed();
+depthLimitTest.fixed2();
 // depthLimitTest.dynamic();
 
 module.exports = {
