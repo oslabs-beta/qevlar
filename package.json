@@ -2,7 +2,7 @@
   "name": "graphql",
   "version": "1.0.0",
   "description": "",
-  "main": "../graphql/src/schema.js",
+  "main": "./src/schema.js",
   "scripts": {
     "start": "nodemon schema.js"
   },

@@ -112,6 +112,9 @@ const RootQueryType = new GraphQLObjectType({
       //type of the books field, a list of BookType
       type: new GraphQLList(BookType),
       description: 'List of books',
+      args: {
+        id: { type: GraphQLInt }
+      },
       //resolve function, retrieves list of books
       resolve: () => books
     },
@@ -129,12 +132,18 @@ const RootQueryType = new GraphQLObjectType({
       //type of the books field, a list of BookType
       type: new GraphQLList(AuthorType),
       description: 'List of authors',
+      args: {
+        id: { type: GraphQLInt }
+      },
       //resolve function, retrieves list of books
       resolve: () => authors
     },
     characters: {
       type: new GraphQLList(CharacterType),
       description: 'List of characters',
+      args: {
+        id: { type: GraphQLInt }
+      },
       resolve: () => characters
     },
     character: {
@@ -148,6 +157,9 @@ const RootQueryType = new GraphQLObjectType({
     houses: {
       type: GraphQLList(HouseType),
       description: 'List of houses',
+      args: {
+        id: { type: GraphQLInt }
+      },
       resolve: () => houses
     },
     house: {

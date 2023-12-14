@@ -1,8 +1,9 @@
 {
   "API_URL": "http://localhost:3000/graphql",
-  "TOP_FIELD": "houses",
-  "SUB_FIELD": "charactersInHouse",
+  "TOP_LEVEL_FIELD": "author",
+  "TOP_LEVEL_FIELD_ID": 1,
+  "CIRCULAR_REF_FIELD": "books",
   "QUERY_LIMIT": 50,
   "WINDOW": 1000,
-  "QUERY_DEPTH_LIMIT": 7
+  "QUERY_DEPTH_LIMIT": 5
 }
