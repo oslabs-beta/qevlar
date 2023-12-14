@@ -6,11 +6,12 @@ const {
   GraphQLInt,
   GraphQLNonNull,
 } = require('graphql');
-const db = require('./_db');
+const db = require('./_db.js');
+// import db from './_db.js';
 //create GraphQL schema here
-console.log('food', db.foods);
-console.log('cat', db.categories);
-console.log('chefs', db.chefs);
+// console.log('food', db.foods);
+// console.log('cat', db.categories);
+// console.log('chefs', db.chefs);
 
 // //create type for each array of objects
 const FoodType = new GraphQLObjectType({
@@ -21,30 +22,34 @@ const FoodType = new GraphQLObjectType({
   //fields-keys in object
   fields: () => ({
     //id
-    id: { type: GraphQLNonNull(GraphQLInt) },
+    id: { type: new GraphQLNonNull(GraphQLInt) },
     //title
-    title: { type: GraphQLNonNull(GraphQLString) },
+    title: { type: new GraphQLNonNull(GraphQLString) },
     //categoryId
-    categoryId: { type: GraphQLNonNull(GraphQLInt) },
+    categoryId: { type: new GraphQLNonNull(GraphQLInt) },
     //img
-    img: { type: GraphQLNonNull(GraphQLString) },
+    img: { type: new GraphQLNonNull(GraphQLString) },
     //ingredients
-    ingredients: { type: GraphQLNonNull(GraphQLString) },
+    ingredients: { type: new GraphQLNonNull(GraphQLString) },
     //chefId
-    chefId: { type: GraphQLNonNull(GraphQLString) },
+    chefId: { type: new GraphQLNonNull(GraphQLInt) },
 
-    //get chef
+    // //get chef
     chef: {
       //type
-      ChefType,
-      resolve: (chef) => {
-        return db.chefs.find((cooks) => cooks.id === chef.chefId);
+      type: ChefType,
+      resolve: (food) => {
+        console.log('food', food);
+        return db.chefs.find((cooks) => {
+          // cooks.id === chef.chefId
+          console.log('cooks', cooks);
+        });
       },
     },
-    //get category
+    // get category
     category: {
       //type
-      CategoryType,
+      type: CategoryType,
       //resolver
       resolve: (cat) => {
         return db.categories.find((category) => category.id === cat.categoryId);
@@ -61,9 +66,9 @@ const CategoryType = new GraphQLObjectType({
   //fields
   fields: () => ({
     //id
-    id: { type: GraphQLNonNull(GraphQLInt) },
+    id: { type: new GraphQLNonNull(GraphQLInt) },
     //meal
-    meal: { type: GraphQLNonNull(GraphQLString) },
+    meal: { type: new GraphQLNonNull(GraphQLString) },
   }),
 });
 
@@ -75,9 +80,9 @@ const ChefType = new GraphQLObjectType({
   //fields
   fields: () => ({
     //id
-    id: { type: GraphQLNonNull(GraphQLInt) },
+    id: { type: new GraphQLNonNull(GraphQLInt) },
     //name
-    name: { type: GraphQLNonNull(GraphQLString) },
+    name: { type: new GraphQLNonNull(GraphQLString) },
   }),
 });
 

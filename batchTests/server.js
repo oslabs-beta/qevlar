@@ -1,36 +1,26 @@
-//import node dependencies
-const https = require('http');
-const fs = require('fs');
-const path = require('path');
-const schema = require('./schema');
-//import graphql dependencies
-const {
-  graphql,
-  GraphQLSchema,
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLList,
-  GraphQLInt,
-  GraphQLNonNull,
-} = require('graphql');
-//initialize server
-// const options = {
-//   port: 3000,
-//   path: '/graphql',
-// };
+// import express from 'express';
+const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
+const { schema } = require('./schema.js');
+const controller = require('./midFunctions.js');
 
-const server = https.createServer();
+const app = express();
 
-server.on('request', (req, res) => {
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    schema: schema,
+    graphiql: true,
+  })
+);
+
+app.post('/graphql', controller.batch, (req, res) => {
   console.log('req', req);
-  console.log('hello');
-  let body = '';
-
-  req.on('data', (chunk) => (body += chunk.toString()));
-
-  console.log('req', req);
-
-  console.log('body', body);
+  console.log('woo');
+  res.status(200).json({ message: 'Received the POST request successfully.' });
 });
 
-server.listen(3000, () => console.log('listening on 3000'));
+app.listen(3000, () => console.log('listening on 3000'));
