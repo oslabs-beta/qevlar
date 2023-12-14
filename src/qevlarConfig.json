@@ -1,0 +1,10 @@
+{
+  "API_URL": "http://localhost:5000/graphql",
+  "TOP_FIELD": "house",
+  "SUB_FIELD": "charactersInHouse",
+  "QUERY_LIMIT": 50,
+  "WINDOW": 1000,
+  "QUERY_DEPTH_LIMIT": 7,
+  "INITIAL_RATE": 10,
+  "INCREMENT": 10
+}

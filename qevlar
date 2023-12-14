@@ -1,0 +1,82 @@
+#!/usr/bin/env node // => script to remove .js from file call
+
+const { redBold, darkHighlight, bold } = require('./color.js') // => import needed colors here
+const readline = require('readline'); // => console interaction module
+const qevlarLogo = `
+                                                  
+██████  ███████ ██    ██ ██       █████  ██████  
+██    ██ ██      ██    ██ ██      ██   ██ ██   ██ 
+██    ██ █████   ██    ██ ██      ███████ ██████  
+██ ▄▄ ██ ██       ██  ██  ██      ██   ██ ██   ██ 
+ ██████  ███████   ████   ███████ ██   ██ ██   ██ 
+    ▀▀                                            
+`; // => console qevlar logo
+
+const { fieldDuplicationTest } = require('./src/tests/fieldDuplicationTest.js');
+const { adaptiveRateLimitingTest } = require('./src/tests/adaptiveRateLimitingTest.js');
+const { fixedDepthTest, dynamicDepthTest } = require('./src/tests/depthLimitTests.js');
+// ...
+// import other tests here
+
+const tests = {
+  '1': {
+    name: 'Field Duplication Test',
+    function: fieldDuplicationTest
+  },
+  '2': {
+    name: 'Adaptive Rate Limiting Test',
+    function: adaptiveRateLimitingTest
+  },
+  '3': {
+    name: 'Fixed Depth Test',
+    function: fixedDepthTest
+  },
+  '4': {
+    name: 'Dynamic Depth Test',
+    function: dynamicDepthTest
+  },
+  // add more tests here to add them to the terminal options
+};
+
+function runTest(testKey, rl) {
+  console.log(`Running ${tests[testKey].name}`);
+  tests[testKey].function(() => {
+    console.log('Choose another test or press Q to exit.');
+    rl.close(); // Close the current readline interface
+    listTestsAndRunSelection(); // Return to the main menu
+  });
+}
+
+
+function listTestsAndRunSelection() {
+  console.log(bold('\nWelcome to Qevlar'));
+  console.log(redBold('\nAvailable Tests:'));
+  Object.keys(tests).forEach(key => {
+    console.log(`${key}: ${tests[key].name}`);
+  });
+  console.log('Q: Exit qevlar testing library');
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  rl.question('Enter the number of the test to run or Q to quit: ', (input) => {
+    const testKey = input.trim().toUpperCase();
+    
+    if (testKey === 'Q') {
+      console.log(redBold('\nThank you for using'));
+      console.log(darkHighlight(`${qevlarLogo}`));
+      console.log(redBold('\nExiting...'));
+      rl.close(); // Close the readline interface and exit
+    } else if (tests[testKey]) {
+      runTest(testKey, rl); // Pass the readline interface to the runTest function
+    } else {
+      console.log('Invalid selection.');
+      rl.close(); // Close the readline interface and show the menu again
+      listTestsAndRunSelection();
+    }
+  });
+}
+
+listTestsAndRunSelection();
