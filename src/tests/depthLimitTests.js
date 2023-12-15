@@ -2,7 +2,7 @@ const { GraphQLClient } = require('graphql-request');
 const config = require('../qevlarConfig.json');
 const { greenBold, highlight, redBold } = require('../../color');
 
-async function fixedDepthTest(callback) {
+async function fixedDepthTest(returnToTestMenu) {
   const client = new GraphQLClient(config.API_URL);
   const query = `query getCharacters {
     characters {
@@ -39,10 +39,10 @@ async function fixedDepthTest(callback) {
     console.log(greenBold('Test passed: ') + highlight('Query depth limited above 7 queries.'));
   }
 
-  if (callback) callback();
+  if (returnToTestMenu) returnToTestMenu();
 }
 
-async function dynamicDepthTest(callback) {
+async function dynamicDepthTest(returnToTestMenu) {
   const client = new GraphQLClient(config.API_URL);
   const dynamicQuery = createDynamicQuery(config.QUERY_DEPTH_LIMIT);
 
@@ -53,7 +53,7 @@ async function dynamicDepthTest(callback) {
     console.log(greenBold('Test passed: ') + highlight(`Query depth limited above ${config.QUERY_DEPTH_LIMIT} queries.`));
   }
 
-  if (callback) callback();
+  if (returnToTestMenu) returnToTestMenu();
 }
 
 function createDynamicQuery(depth) {

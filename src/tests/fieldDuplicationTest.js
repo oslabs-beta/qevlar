@@ -13,7 +13,7 @@ const { green, greenBold, greenItalic,
   bold, italic, highlight,
   underlined, whiteOut } = require('../../color');
 
-async function fieldDuplicationTest(callback) {
+async function fieldDuplicationTest(returnToTestMenu) {
   const client = new GraphQLClient(config.API_URL);
   const query = `{ ${config.TOP_FIELD} { ${config.SUB_FIELD} ${config.SUB_FIELD} } }`;
 
@@ -23,12 +23,12 @@ async function fieldDuplicationTest(callback) {
     console.log(highlight('API accepted duplicate fields.'));
   } catch (error) {
     console.log(greenBold('\nTest passed:'));
-    console.log('API rejected duplicate fields.');
+    console.log('API rejected duplicate1 fields.');
     console.log(highlight('\nSummary of Error'))
     console.log(('Error: ' + error.message));
   }11
 
-  if (callback) callback();
+  if (returnToTestMenu) returnToTestMenu();
 }
 
 module.exports = { fieldDuplicationTest };

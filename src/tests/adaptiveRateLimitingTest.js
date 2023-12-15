@@ -2,7 +2,7 @@ const { GraphQLClient } = require('graphql-request');
 const config = require('../qevlarConfig.json');
 const { greenBold, highlight } = require('../../color');
 
-async function adaptiveRateLimitingTest(callback) {
+async function adaptiveRateLimitingTest(returnToTestMenu) {
   const client = new GraphQLClient(config.API_URL);
   const query = `{ ${config.TOP_FIELD} { ${config.SUB_FIELD} } }`;
   let rate = config.INITIAL_RATE;
@@ -35,7 +35,7 @@ async function adaptiveRateLimitingTest(callback) {
     console.log(greenBold('Test concluded: No rate limiting detected within the tested range.'));
   }
 
-  if (callback) callback();
+  if (returnToTestMenu) returnToTestMenu();
 }
 
 module.exports = { adaptiveRateLimitingTest };

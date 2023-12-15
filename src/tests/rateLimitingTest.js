@@ -1,7 +1,7 @@
 const { GraphQLClient } = require('graphql-request');
 const config = require('../qevlarConfig.json');
 
-async function rateLimitTest() {
+async function rateLimitTest(returnToTestMenu) {
   const client = new GraphQLClient(config.API_URL);
   const query = `{ ${config.TOP_FIELD} { ${config.SUB_FIELD} } }`;
 
@@ -13,6 +13,8 @@ async function rateLimitTest() {
   } catch (error) {
     console.log(`Test passed: API did not accept requests above rate limit (${config.WINDOW}). Error: ${error.message}`);
   }
+
+  if (returnToTestMenu) returnToTestMenu();
 }
 
 module.exports = { rateLimitTest };
