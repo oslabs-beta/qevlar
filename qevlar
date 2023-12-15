@@ -15,6 +15,8 @@ const qevlarLogo = `
 const { fieldDuplicationTest } = require('./src/tests/fieldDuplicationTest.js');
 const { adaptiveRateLimitingTest } = require('./src/tests/adaptiveRateLimitingTest.js');
 const { fixedDepthTest, dynamicDepthTest } = require('./src/tests/depthLimitTests.js');
+const { rateLimitTest } = require('./src/tests/depthLimitTests.js');
+const { batchTest } = require('./src/tests/queryBatchTest.js');
 // ...
 // import other tests here
 
@@ -34,7 +36,15 @@ const tests = {
   '4': {
     name: 'Dynamic Depth Test',
     function: dynamicDepthTest
-  },
+  }, 
+  '5': {
+    name: 'Rate Limit Test',
+    function: rateLimitTest
+  }, 
+  '6': {
+    name: 'Query Batch Test',
+    function: batchTest
+  }
   // add more tests here to add them to the terminal options
 };
 
