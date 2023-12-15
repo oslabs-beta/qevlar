@@ -210,8 +210,6 @@ const schema = new GraphQLSchema({
   mutation: RootMutationType
 })
 
-// ** TRY ANOTHER APP USE HERE WITH JUST MIDDLEWARE
-// app.use(qevlarSecurity.staticQA);
 
 app.use('/graphql', qevlarSecurity.staticQA, graphqlHTTP({
   schema: schema,

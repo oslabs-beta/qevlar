@@ -6,6 +6,8 @@ const qevlarSecurity = {};
 qevlarSecurity.staticQA = (req, res, next) => {
   console.log('Made it to staticQA middleware.');
   const query = req.body;
+  console.log('req in middleware: ', req.body);
+
   function validateQuery(incomingQuery) {
     let isValidated = true;
     //do static query analysis here

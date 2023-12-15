@@ -117,6 +117,9 @@ depthLimitTest.max = (returnToTestMenu) => {
        }`
     })
   })
+    // .then((res) => res.json())
+    // .then((res) => JSON.stringify(res))
+    // .then((res) => console.log('RESPONSE--->', res));
     .then((res) => {
       if (res.status < 200 || res.status > 299) { //any non successful response code
         console.log(greenBold('Test passed: ') + highlight('Query blocked. Query depth exceeded depth limit.'));
