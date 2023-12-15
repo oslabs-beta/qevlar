@@ -5,23 +5,19 @@ const qevlarSecurity = {};
 //Static Query Analysis
 qevlarSecurity.staticQA = (req, res, next) => {
   console.log('Made it to staticQA middleware.');
+  const query = req.body;
   function validateQuery(incomingQuery) {
+    let isValidated = true;
     //do static query analysis here
-    throw new Error('Sorry!')
+
+    return isValidated;
   }
 
-  try {
-    const query = req.body;
-    validateQuery(query);
+  if (validateQuery(query)) {
+    return next();
   }
-  catch (err) {
-    return next({
-      log: `Express error during staticQA middleware: ${err}`,
-      status: 500,
-      message: { err: 'QUERY REJECTED' }
-    })
+  else {
+    res.status(403).send('Query denied.')
   }
-  // res.status(500).send('QUERY REJECTED');
-  // return next();
 }
 module.exports = qevlarSecurity;

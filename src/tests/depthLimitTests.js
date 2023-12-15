@@ -29,7 +29,7 @@ try {
 const depthLimitTest = {};
 
 //hardcoded query for just for testing
-depthLimitTest.devTest = () => {
+depthLimitTest.devTest = (returnToTestMenu) => {
 
   fetch(config.API_URL, {
     method: 'POST',
@@ -78,22 +78,32 @@ depthLimitTest.devTest = () => {
 }
 
 //FIXED max query depth (from config value)
-depthLimitTest.max = () => {
-  let success;
+depthLimitTest.max = (returnToTestMenu) => {
 
   //create query body based on depth limit
   function setDynamicQueryBody() {
-    let dynamicQueryBody = `${config.TOP_LEVEL_FIELD}(id: ${config.ANY_TOP_LEVEL_FIELD_ID}) {${config.CIRCULAR_REF_FIELD} {`;
-    let depth = config.QUERY_DEPTH_LIMIT - 1;
-    let endOfQuery = 'id}}';
-    while (depth > 0) {
-      dynamicQueryBody += `${config.TOP_LEVEL_FIELD} {${config.CIRCULAR_REF_FIELD} {`; //field and subfield from config
-      endOfQuery += '}}';
-      depth--;
+    let dynamicQueryBody = `${config.TOP_LEVEL_FIELD}(id: ${config.ANY_TOP_LEVEL_FIELD_ID}) {`;
+    let depth = 1;
+    let endOfQuery = 'id}';
+    let lastFieldAddedToQuery = config.TOP_LEVEL_FIELD;
+
+    //alternate adding fields that can reference each other
+    while (depth < config.QUERY_DEPTH_LIMIT) {
+      if (lastFieldAddedToQuery == config.TOP_LEVEL_FIELD) {
+        dynamicQueryBody += `${config.CIRCULAR_REF_FIELD} {`;
+        lastFieldAddedToQuery = config.CIRCULAR_REF_FIELD;
+      }
+      else if (lastFieldAddedToQuery == config.CIRCULAR_REF_FIELD) {
+        dynamicQueryBody += `${config.TOP_LEVEL_FIELD} {`;
+        lastFieldAddedToQuery = config.TOP_LEVEL_FIELD;
+      }
+      endOfQuery += '}';
+      depth += 1;
     }
     return dynamicQueryBody + endOfQuery;
   }
   const dynamicQueryBody = setDynamicQueryBody();
+  console.log('---> QUERY: ', dynamicQueryBody);
 
   //make fetch
   fetch(config.API_URL, {
@@ -108,7 +118,7 @@ depthLimitTest.max = () => {
     })
   })
     .then((res) => {
-      if (res.status < 200 || res.status > 299) {
+      if (res.status < 200 || res.status > 299) { //any non successful response code
         console.log(greenBold('Test passed: ') + highlight('Query blocked. Query depth exceeded depth limit.'));
       }
       else {
@@ -119,24 +129,35 @@ depthLimitTest.max = () => {
 }
 
 //INCREMENTS query depth, until blocked
-depthLimitTest.incremental = async () => {
+depthLimitTest.incremental = async (returnToTestMenu) => {
   let incrementalDepth = 1;
-  let success;
+  let success = false;
 
   function makeQueryAtIncrementalDepth() {
     //create query body based on incrementalDepth
     function setDynamicQueryBody() {
-      let dynamicQueryBody = `${config.TOP_LEVEL_FIELD}(id: ${config.ANY_TOP_LEVEL_FIELD_ID}) {${config.CIRCULAR_REF_FIELD} {`;
+      let dynamicQueryBody = `${config.TOP_LEVEL_FIELD}(id: ${config.ANY_TOP_LEVEL_FIELD_ID}) {`;
       let depth = incrementalDepth;
-      let endOfQuery = 'id}}';
-      while (depth > 0) {
-        dynamicQueryBody += `${config.TOP_LEVEL_FIELD} {${config.CIRCULAR_REF_FIELD} {`;
-        endOfQuery += '}}';
-        depth--;
+      let endOfQuery = 'id}';
+      let lastFieldAddedToQuery = config.TOP_LEVEL_FIELD;
+
+      //alternate adding fields that can reference each other
+      while (depth < config.QUERY_DEPTH_LIMIT - 1) {
+        if (lastFieldAddedToQuery == config.TOP_LEVEL_FIELD) {
+          dynamicQueryBody += `${config.CIRCULAR_REF_FIELD} {`;
+          lastFieldAddedToQuery = config.CIRCULAR_REF_FIELD;
+        }
+        else if (lastFieldAddedToQuery == config.CIRCULAR_REF_FIELD) {
+          dynamicQueryBody += `${config.TOP_LEVEL_FIELD} {`;
+          lastFieldAddedToQuery = config.TOP_LEVEL_FIELD;
+        }
+        endOfQuery += '}';
+        depth += 1;
       }
       return dynamicQueryBody + endOfQuery;
     }
     const dynamicQueryBody = setDynamicQueryBody();
+    console.log('-----> QUERY: ', dynamicQueryBody);
 
     //make fetch with dynamicQueryBody
     return fetch(config.API_URL, {
@@ -159,11 +180,11 @@ depthLimitTest.incremental = async () => {
       })
   }
 
-  while (incrementalDepth < config.QUERY_DEPTH_LIMIT) {
+  while (incrementalDepth <= config.QUERY_DEPTH_LIMIT) {
     try {
       await makeQueryAtIncrementalDepth();
-      console.log(greenBold(`------> Query at depth ${incrementalDepth} complete.<-------`));
       incrementalDepth++;
+      console.log(greenBold(`------> Query at depth ${incrementalDepth} complete.<-------`));
     }
     catch (err) {
       success = false;
@@ -179,8 +200,8 @@ depthLimitTest.incremental = async () => {
   }
 }
 
-// depthLimitTest.max();
-depthLimitTest.incremental();
+depthLimitTest.max();
+// depthLimitTest.incremental();
 
 module.exports = {
   depthLimitTest,
