@@ -1,4 +1,5 @@
-const app = require('express')();
+const express = require('express');
+const app = express();
 const { expressGraphQL, graphqlHTTP } = require('express-graphql');
 const { books, authors, characters, houses } = require('./db.js');
 const qevlarSecurity = require('./qevlarSecurity.js');
@@ -210,7 +211,7 @@ const schema = new GraphQLSchema({
   mutation: RootMutationType
 })
 
-
+app.use(express.json());
 app.use('/graphql', qevlarSecurity.staticQA, graphqlHTTP({
   schema: schema,
   // graphiql: true,

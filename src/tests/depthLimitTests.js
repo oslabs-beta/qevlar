@@ -122,10 +122,10 @@ depthLimitTest.max = (returnToTestMenu) => {
     // .then((res) => console.log('RESPONSE--->', res));
     .then((res) => {
       if (res.status < 200 || res.status > 299) { //any non successful response code
-        console.log(greenBold('Test passed: ') + highlight('Query blocked. Query depth exceeded depth limit.'));
+        console.log(greenBold('Test passed: ') + highlight(`Query blocked. Query depth exceeded depth limit of ${config.QUERY_DEPTH_LIMIT}.`));
       }
       else {
-        console.log(redBold('Test failed: ') + highlight(`Query depth not limited to set depth limit of ${config.QUERY_DEPTH_LIMIT}.`));
+        console.log(redBold('Test failed: ') + highlight(`Query depth was over limit of ${config.QUERY_DEPTH_LIMIT}, yet was not blocked.`));
       }
     })
 
@@ -203,8 +203,8 @@ depthLimitTest.incremental = async (returnToTestMenu) => {
   }
 }
 
-depthLimitTest.max();
-// depthLimitTest.incremental();
+// depthLimitTest.max();
+depthLimitTest.incremental();
 
 module.exports = {
   depthLimitTest,
