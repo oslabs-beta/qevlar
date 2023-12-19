@@ -73,9 +73,11 @@ depthLimitTest.max = (returnToTestMenu) => {
     .then((res) => {
       if (res.status < 200 || res.status > 299) { //any non successful response code
         console.log(greenBold('Test passed: ') + highlight(`Query blocked. Query depth exceeded depth limit of ${config.QUERY_DEPTH_LIMIT}.`));
+        if (returnToTestMenu) returnToTestMenu();
       }
       else {
         console.log(redBold('Test failed: ') + highlight(`Query depth was over limit of ${config.QUERY_DEPTH_LIMIT}, yet was not blocked.`));
+        if (returnToTestMenu) returnToTestMenu();
       }
     })
 
@@ -144,10 +146,12 @@ depthLimitTest.incremental = async (returnToTestMenu) => {
   if (!success) {
     console.log(redBold(`------> Query at depth ${incrementalDepth + 1} incomplete.<-------`));
     console.log(greenBold('Test passed: ') + highlight(`Query blocked. Depth limited above ${config.QUERY_DEPTH_LIMIT} queries.`));
+    if (returnToTestMenu) returnToTestMenu();
     return;
   }
   else {
     console.log(redBold('Test failed: ') + highlight(`Query depth not limited to ${config.QUERY_DEPTH_LIMIT}.`));
+    if (returnToTestMenu) returnToTestMenu();
   }
 }
 
