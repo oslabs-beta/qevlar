@@ -1,4 +1,3 @@
-// Colors library
 const { green, greenBold, greenItalic,
   greenHighlight, greenUnderlined, greenOut,
   red, redBold, redItalic,
@@ -28,56 +27,7 @@ try {
 
 const depthLimitTest = {};
 
-//hardcoded query for just for testing
-depthLimitTest.devTest = (returnToTestMenu) => {
-
-  fetch(config.API_URL, {
-    method: 'POST',
-    headers: {
-      "content-type": "application/json"
-    },
-    body: JSON.stringify({
-      query: `query getCharacters {
-         characters {
-           name
-           houseId
-           house {
-             name
-             charactersInHouse {
-               name
-               house {
-                 name
-                 charactersInHouse {
-                   name
-                   house {
-                     name
-                     charactersInHouse {
-                       name
-                       house {
-                         name
-                       }
-                     }
-                   }
-                 }
-               }
-             }
-           }
-         }
-       }`
-    })
-  })
-    // .then((res) => res.json())
-    // .then((res) => JSON.stringify(res))
-    // .then((res) => console.log(res))
-    .then((res) => {
-      if (res.status < 200 || res.status > 299) {
-        console.log(greenBold('Test passed: ') + highlight('Query depth limited above 7 queries.'));
-      }
-      else console.log(redBold('Test failed: ') + highlight('Query depth not limited below 9.'));
-    })
-}
-
-//FIXED max query depth (from config value)
+//FIXED max query depth test
 depthLimitTest.max = (returnToTestMenu) => {
 
   //create query body based on depth limit
@@ -131,7 +81,7 @@ depthLimitTest.max = (returnToTestMenu) => {
 
 }
 
-//INCREMENTS query depth, until blocked
+//INCREMENTS query depth until blocked
 depthLimitTest.incremental = async (returnToTestMenu) => {
   let incrementalDepth = 1;
   let success = true;
@@ -140,12 +90,12 @@ depthLimitTest.incremental = async (returnToTestMenu) => {
     //create query body based on incrementalDepth
     function setDynamicQueryBody() {
       let dynamicQueryBody = `${config.TOP_LEVEL_FIELD}(id: ${config.ANY_TOP_LEVEL_FIELD_ID}) {`;
-      let depth = incrementalDepth;
+      let depth = 1;
       let endOfQuery = 'id}';
       let lastFieldAddedToQuery = config.TOP_LEVEL_FIELD;
 
       //alternate adding fields that can reference each other 
-      while (depth < config.QUERY_DEPTH_LIMIT) { //until reaching depth 1 greater than limit
+      while (depth < incrementalDepth) { //until reaching depth 1 greater than limit
         if (lastFieldAddedToQuery == config.TOP_LEVEL_FIELD) {
           dynamicQueryBody += `${config.CIRCULAR_REF_FIELD} {`;
           lastFieldAddedToQuery = config.CIRCULAR_REF_FIELD;
@@ -160,7 +110,6 @@ depthLimitTest.incremental = async (returnToTestMenu) => {
       return dynamicQueryBody + endOfQuery;
     }
     const dynamicQueryBody = setDynamicQueryBody();
-    // console.log('-----> QUERY: ', dynamicQueryBody);
 
     //make fetch with dynamicQueryBody
     return fetch(config.API_URL, {
@@ -174,20 +123,14 @@ depthLimitTest.incremental = async (returnToTestMenu) => {
          }`
       })
     })
-      // .then((res) => res.json())
-      // .then((res) => JSON.stringify(res))
-      // .then((res) => console.log(res))
       .then((res) => {
         if (res.status < 200 || res.status > 299) success = false;
-        // console.log(success);
         return success;
       })
   }
-
   while (incrementalDepth <= config.QUERY_DEPTH_LIMIT) {
     try {
       success = await makeQueryAtIncrementalDepth();
-      console.log('success in while loop: ', success)
       if (!success) break;
       incrementalDepth++;
       console.log(greenBold(`------> Query at depth ${incrementalDepth} complete.<-------`));
@@ -196,8 +139,8 @@ depthLimitTest.incremental = async (returnToTestMenu) => {
       success = false;
     }
   }
-  console.log('success before last if: ', success)
   if (!success) {
+    console.log(redBold(`------> Query at depth ${incrementalDepth + 1} incomplete.<-------`));
     console.log(greenBold('Test passed: ') + highlight(`Query blocked. Depth limited above ${config.QUERY_DEPTH_LIMIT} queries.`));
     return;
   }
@@ -205,9 +148,6 @@ depthLimitTest.incremental = async (returnToTestMenu) => {
     console.log(redBold('Test failed: ') + highlight(`Query depth not limited to ${config.QUERY_DEPTH_LIMIT}.`));
   }
 }
-
-// depthLimitTest.max();
-depthLimitTest.incremental();
 
 module.exports = {
   depthLimitTest,
