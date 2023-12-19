@@ -21,7 +21,7 @@ qevlarSecurity.staticQA = (req, res, next) => {
 
   //get query string from POST request body
   const query = req.body.query;
-
+  // console.log('query ---> ', query)
   //helper func to validate query depth
   function validateQuery(incomingQuery) {
     let isValidated = true;
@@ -36,6 +36,8 @@ qevlarSecurity.staticQA = (req, res, next) => {
     }
     //if depth counter over depth limit, don't validate
     isValidated = depthCounter <= config.QUERY_DEPTH_LIMIT;
+
+    // console.log(`Query depth of ${depthCounter} validated? ${isValidated}`)
     return isValidated;
   }
 
