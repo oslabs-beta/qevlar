@@ -128,6 +128,7 @@ depthLimitTest.incremental = async (returnToTestMenu) => {
         return success;
       })
   }
+
   while (incrementalDepth <= config.QUERY_DEPTH_LIMIT) {
     try {
       success = await makeQueryAtIncrementalDepth();
@@ -139,6 +140,7 @@ depthLimitTest.incremental = async (returnToTestMenu) => {
       success = false;
     }
   }
+
   if (!success) {
     console.log(redBold(`------> Query at depth ${incrementalDepth + 1} incomplete.<-------`));
     console.log(greenBold('Test passed: ') + highlight(`Query blocked. Depth limited above ${config.QUERY_DEPTH_LIMIT} queries.`));

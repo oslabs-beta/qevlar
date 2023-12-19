@@ -14,7 +14,7 @@ const qevlarLogo = `
 
 const { fieldDuplicationTest } = require('./src/tests/fieldDuplicationTest.js');
 const { adaptiveRateLimitingTest } = require('./src/tests/adaptiveRateLimitingTest.js');
-const { fixedDepthTest, dynamicDepthTest } = require('./src/tests/depthLimitTests.js');
+const depthLimitTest = require('./src/tests/depthLimitTests.js');
 const { rateLimitTest } = require('./src/tests/depthLimitTests.js');
 const { batchTest } = require('./src/tests/queryBatchTest.js');
 // ...
@@ -31,16 +31,16 @@ const tests = {
   },
   '3': {
     name: 'Fixed Depth Test',
-    function: fixedDepthTest
+    function: depthLimitTest.max
   },
   '4': {
-    name: 'Dynamic Depth Test',
-    function: dynamicDepthTest
-  }, 
+    name: 'Incremental Depth Test',
+    function: depthLimitTest.incremental
+  },
   '5': {
     name: 'Rate Limit Test',
     function: rateLimitTest
-  }, 
+  },
   '6': {
     name: 'Query Batch Test',
     function: batchTest
@@ -73,7 +73,7 @@ function listTestsAndRunSelection() {
 
   rl.question('Enter the number of the test to run or Q to quit: ', (input) => {
     const testKey = input.trim().toUpperCase();
-    
+
     if (testKey === 'Q') {
       console.log(redBold('\nThank you for using'));
       console.log(darkHighlight(`${qevlarLogo}`));
