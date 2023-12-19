@@ -14,7 +14,7 @@ const path = require('path');
 
 
 // Get config file
-const configPath = path.resolve(__dirname, '../../qevlarConfig.json');
+const configPath = path.resolve(__dirname, '../qevlarConfig.json');
 // Read config file
 let config = {};
 try {
