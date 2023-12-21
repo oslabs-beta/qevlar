@@ -1,9 +1,7 @@
 //import config settings
 const config = require('../qevlarConfig.json');
-//import GraphQLClient
-const { GraphQLClient } = require('graphql-request');
 
-console.log(config);
+
 //import colors
 const {
   green,
@@ -39,65 +37,72 @@ const {
 
 const url = config.API_URL;
 const batchLength = config.BATCH_SIZE;
-const mealQuery = `{
-    meals {
-      id
-      ingredients
-      img
-      chefId {
-        name
-        id
-      }
-      title
-      category {
-        meal
-        id
-      }
-    }
-  }`;
+// const mealQuery = `{
+//     meals { //top level field
+//       id // sub field
+//       ingredients
+//       img
+//       chefId {
+//         name
+//         id
+//       }
+//       title
+//       category {
+//         meal
+//         id
+//       }
+//     }
+//   }`;
+
+const query = {
+  // "query": "query " + `"${config.TOP_LEVEL_FIELD} {${config.SUB_FIELD}}}`
+  query: `query { ${config.TOP_LEVEL_FIELD} { ${config.SUB_FIELD} } }`
+}
 
 const generateDynamicBatchQuery = (count, baseQuery) => {
-  const batchQueries = [];
-
-  for (let i = 1; i <= count; i++) {
-    batchQueries.push({ query: baseQuery });
-  }
-
-  return batchQueries;
+  return Array.from({ length: count }, () => baseQuery)
 };
 
-const batchTest = (num, q, returnToTestMenu) => {
-  const newBatch = generateDynamicBatchQuery(num, q);
-  //   console.log('newBatch', newBatch);
 
-  fetch(url, {
+// const generateDynamicBatchQuery = (count, baseQuery) => {
+//   const batchQueries = [];
+
+//   for (let i = 1; i <= count; i++) {
+//     batchQueries.push(baseQuery);
+//   }
+
+//   return batchQueries;
+// };
+
+const batchTest = (returnToTestMenu) => {
+  const newBatch = generateDynamicBatchQuery(batchLength, query);
+  // const stringifyNewBatch = JSON.stringify(newBatch);
+  console.log('newBatch: ', newBatch);
+
+
+  return fetch(url, {
     method: 'POST',
-    mode: 'cors',
     headers: {
       'Content-type': 'application/json',
     },
-    body: JSON.stringify(newBatch),
+    body: JSON.stringify([...newBatch]),
   })
-    .then(async (response) => {
-      console.log('res status', response.status);
-      console.log('res headers', response.headers);
-      console.log('resOk', response.ok);
-      const responseBody = await response.text();
+    .then((res) => res.json())
+    .then((res => JSON.stringify(res)))
+    .then((res) => console.log('RESPONSE: ', res))
+    .then((response) => {
       if (response.ok) {
-        throw new Error(redBold('You are vulernable to batch attacks'));
+        console.log(redBold('You are vulernable to batch attacks'));
+        if (returnToTestMenu) returnToTestMenu();
       } else {
         console.log(greenBold('No batches gettin by you!'));
+        if (returnToTestMenu) returnToTestMenu();
       }
-      return responseBody;
-    })
-    .then((data) => console.log('data', data))
-    .catch((error) =>
-      console.error('Error:', error.message, 'stack', error.stack)
-    );
+    }
+    )
 
-  if (returnToTestMenu) returnToTestMenu();
+  // if (returnToTestMenu) returnToTestMenu();
 };
 
 // Call the batchTest function
-batchTest(batchLength, mealQuery);
 module.exports = { batchTest };

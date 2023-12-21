@@ -15,7 +15,7 @@ const { green, greenBold, greenItalic,
 
 async function fieldDuplicationTest(returnToTestMenu) {
   const client = new GraphQLClient(config.API_URL);
-  const query = `{ ${config.TOP_FIELD} { ${config.SUB_FIELD} ${config.SUB_FIELD} } }`;
+  const query = `{ ${config.TOP_LEVEL_FIELD} { ${config.SUB_FIELD} ${config.SUB_FIELD} } }`;
 
   try {
     await client.request(query);
@@ -26,7 +26,7 @@ async function fieldDuplicationTest(returnToTestMenu) {
     console.log('API rejected duplicate1 fields.');
     console.log(highlight('\nSummary of Error'))
     console.log(('Error: ' + error.message));
-  }11
+  } 11
 
   if (returnToTestMenu) returnToTestMenu();
 }

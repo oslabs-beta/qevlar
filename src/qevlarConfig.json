@@ -1,11 +1,10 @@
 {
   "API_URL": "http://localhost:3000/graphql",
   "TOP_LEVEL_FIELD": "author",
+  "SUB_FIELD": "name",
   "ANY_TOP_LEVEL_FIELD_ID": 1,
   "CIRCULAR_REF_FIELD": "books",
-  "TOP_FIELD": "id",
-  "SUB_FIELD": "name",
-  "QUERY_LIMIT": 50,
+  "QUERY_RATE_LIMIT": 100,
   "WINDOW": 1000,
   "QUERY_DEPTH_LIMIT": 5,
   "INITIAL_RATE": 10,

@@ -1,6 +1,6 @@
 #!/usr/bin/env node // => script to remove .js from file call
 
-const { redBold, darkHighlight, bold } = require('./color.js') // => import needed colors here
+const { redBold, darkHighlight, bold, underlined, darkBold, yellowBold } = require('./color.js') // => import needed colors here
 const readline = require('readline'); // => console interaction module
 const qevlarLogo = `
                                                   
@@ -15,7 +15,7 @@ const qevlarLogo = `
 const { fieldDuplicationTest } = require('./src/tests/fieldDuplicationTest.js');
 const { adaptiveRateLimitingTest } = require('./src/tests/adaptiveRateLimitingTest.js');
 const depthLimitTest = require('./src/tests/depthLimitTests.js');
-const { rateLimitTest } = require('./src/tests/depthLimitTests.js');
+const rateLimitTest = require('./src/tests/rateLimitTest.js');
 const { batchTest } = require('./src/tests/queryBatchTest.js');
 // ...
 // import other tests here
@@ -49,7 +49,7 @@ const tests = {
 };
 
 function runTest(testKey, rl) {
-  console.log(`Running ${tests[testKey].name}`);
+  console.log(`\nRunning ${tests[testKey].name}\n`);
   tests[testKey].function(() => {
     console.log('Choose another test or press Q to exit.');
     rl.close(); // Close the current readline interface
@@ -59,19 +59,21 @@ function runTest(testKey, rl) {
 
 
 function listTestsAndRunSelection() {
-  console.log(bold('\nWelcome to Qevlar'));
-  console.log(redBold('\nAvailable Tests:'));
+  console.log(bold('\n•───────• Welcome to Qevlar •───────•'));
+  console.log(yellowBold('\nAvailable Tests:'));
+  console.log(darkBold('═══════════════════════════════'))
   Object.keys(tests).forEach(key => {
     console.log(`${key}: ${tests[key].name}`);
   });
   console.log('Q: Exit qevlar testing library');
+  console.log(darkBold('═══════════════════════════════'))
 
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
   });
 
-  rl.question('Enter the number of the test to run or Q to quit: ', (input) => {
+  rl.question('\nEnter the number of the test to run or Q to quit: \n', (input) => {
     const testKey = input.trim().toUpperCase();
 
     if (testKey === 'Q') {

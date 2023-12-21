@@ -13,13 +13,13 @@ const fs = require('fs');
 const path = require('path');
 
 
-// Get config file
-const configPath = path.resolve(__dirname, '../../qevlarConfig.json');
-// Read config file
+//Get config file
+const configPath = path.resolve(__dirname, '../qevlarConfig.json');
+//Read config file
 let config = {};
 try {
   const configFile = fs.readFileSync(configPath, 'utf8');
-  // Set config object
+  //Set config object
   config = JSON.parse(configFile);
 } catch (error) {
   console.error('Error reading config file:', error);
@@ -27,17 +27,17 @@ try {
 
 const depthLimitTest = {};
 
-//FIXED max query depth test
+//Fixed max query depth test
 depthLimitTest.max = (returnToTestMenu) => {
 
-  //create query body based on depth limit
+  //Create query body based on depth limit
   function setDynamicQueryBody() {
     let dynamicQueryBody = `${config.TOP_LEVEL_FIELD}(id: ${config.ANY_TOP_LEVEL_FIELD_ID}) {`;
     let depth = 1;
     let endOfQuery = 'id}';
     let lastFieldAddedToQuery = config.TOP_LEVEL_FIELD;
 
-    //alternate adding fields that can reference each other
+    //Alternate adding fields that can reference each other
     while (depth < config.QUERY_DEPTH_LIMIT) {
       if (lastFieldAddedToQuery == config.TOP_LEVEL_FIELD) {
         dynamicQueryBody += `${config.CIRCULAR_REF_FIELD} {`;
@@ -53,9 +53,8 @@ depthLimitTest.max = (returnToTestMenu) => {
     return dynamicQueryBody + endOfQuery;
   }
   const dynamicQueryBody = setDynamicQueryBody();
-  console.log('---> QUERY: ', dynamicQueryBody);
 
-  //make fetch
+  //Make fetch
   fetch(config.API_URL, {
     method: 'POST',
     headers: {
@@ -67,9 +66,6 @@ depthLimitTest.max = (returnToTestMenu) => {
        }`
     })
   })
-    // .then((res) => res.json())
-    // .then((res) => JSON.stringify(res))
-    // .then((res) => console.log('RESPONSE--->', res));
     .then((res) => {
       if (res.status < 200 || res.status > 299) { //any non successful response code
         console.log(greenBold('Test passed: ') + highlight(`Query blocked. Query depth exceeded depth limit of ${config.QUERY_DEPTH_LIMIT}.`));
@@ -83,21 +79,21 @@ depthLimitTest.max = (returnToTestMenu) => {
 
 }
 
-//INCREMENTS query depth until blocked
+//Increments query depth until blocked
 depthLimitTest.incremental = async (returnToTestMenu) => {
   let incrementalDepth = 1;
   let success = true;
 
   async function makeQueryAtIncrementalDepth() {
-    //create query body based on incrementalDepth
+    //Create query body based on incrementalDepth
     function setDynamicQueryBody() {
       let dynamicQueryBody = `${config.TOP_LEVEL_FIELD}(id: ${config.ANY_TOP_LEVEL_FIELD_ID}) {`;
       let depth = 1;
       let endOfQuery = 'id}';
       let lastFieldAddedToQuery = config.TOP_LEVEL_FIELD;
 
-      //alternate adding fields that can reference each other 
-      while (depth < incrementalDepth) { //until reaching depth 1 greater than limit
+      //Alternate adding fields that can reference each other 
+      while (depth < incrementalDepth) { //Until reaching depth 1 greater than limit
         if (lastFieldAddedToQuery == config.TOP_LEVEL_FIELD) {
           dynamicQueryBody += `${config.CIRCULAR_REF_FIELD} {`;
           lastFieldAddedToQuery = config.CIRCULAR_REF_FIELD;
@@ -113,7 +109,7 @@ depthLimitTest.incremental = async (returnToTestMenu) => {
     }
     const dynamicQueryBody = setDynamicQueryBody();
 
-    //make fetch with dynamicQueryBody
+    //Make fetch with dynamicQueryBody
     return fetch(config.API_URL, {
       method: 'POST',
       headers: {
@@ -145,17 +141,14 @@ depthLimitTest.incremental = async (returnToTestMenu) => {
 
   if (!success) {
     console.log(redBold(`------> Query at depth ${incrementalDepth + 1} incomplete.<-------`));
-    console.log(greenBold('Test passed: ') + highlight(`Query blocked. Depth limited above ${config.QUERY_DEPTH_LIMIT} queries.`));
+    console.log(greenBold('Test passed: ') + highlight(`Query blocked. Depth limited above ${config.QUERY_DEPTH_LIMIT} queries.\n`));
     if (returnToTestMenu) returnToTestMenu();
     return;
   }
   else {
-    console.log(redBold('Test failed: ') + highlight(`Query depth not limited to ${config.QUERY_DEPTH_LIMIT}.`));
+    console.log(redBold('Test failed: ') + highlight(`Query depth not limited to ${config.QUERY_DEPTH_LIMIT}.\n`));
     if (returnToTestMenu) returnToTestMenu();
   }
 }
 
-module.exports = {
-  depthLimitTest,
-  getConfig: () => config
-}
+module.exports = depthLimitTest;
