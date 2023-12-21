@@ -13,9 +13,9 @@ const fs = require('fs');
 const path = require('path');
 
 
-//Get config file
+// Get config file
 const configPath = path.resolve(__dirname, '../qevlarConfig.json');
-//Read config file
+// Read config file
 let config = {};
 try {
   const configFile = fs.readFileSync(configPath, 'utf8');
