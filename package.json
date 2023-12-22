@@ -1,20 +1,18 @@
 {
-  "name": "qevlar",
+  "name": "graphql",
   "version": "1.0.0",
-  "description": "GraphQL API security testing",
-  "main": "server.js",
+  "description": "",
+  "main": "qevlar",
   "scripts": {
-    "start": " nodemon ./batchTests/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon qevlar",
+    "qevlar": "nodemon qevlar"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2",
-    "express-graphql": "^0.12.0",
-    "graphql": "^15.3.0",
-    "graphql-http": "^1.22.0"
+    "graphql": "^15.8.0",
+    "graphql-request": "^6.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

@@ -1,0 +1,94 @@
+#!/usr/bin/env node // => script to remove .js from file call
+
+const { redBold, darkHighlight, bold, underlined, darkBold, yellowBold } = require('./color.js') // => import needed colors here
+const readline = require('readline'); // => console interaction module
+const qevlarLogo = `
+                                                  
+██████  ███████ ██    ██ ██       █████  ██████  
+██    ██ ██      ██    ██ ██      ██   ██ ██   ██ 
+██    ██ █████   ██    ██ ██      ███████ ██████  
+██ ▄▄ ██ ██       ██  ██  ██      ██   ██ ██   ██ 
+ ██████  ███████   ████   ███████ ██   ██ ██   ██ 
+    ▀▀                                            
+`; // => console qevlar logo
+
+const { fieldDuplicationTest } = require('./src/tests/fieldDuplicationTest.js');
+const { adaptiveRateLimitingTest } = require('./src/tests/adaptiveRateLimitingTest.js');
+const depthLimitTest = require('./src/tests/depthLimitTests.js');
+const rateLimitTest = require('./src/tests/rateLimitTest.js');
+const { batchTest } = require('./src/tests/queryBatchTest.js');
+// ...
+// import other tests here
+
+const tests = {
+  '1': {
+    name: 'Field Duplication Test',
+    function: fieldDuplicationTest
+  },
+  '2': {
+    name: 'Adaptive Rate Limiting Test',
+    function: adaptiveRateLimitingTest
+  },
+  '3': {
+    name: 'Fixed Depth Test',
+    function: depthLimitTest.max
+  },
+  '4': {
+    name: 'Incremental Depth Test',
+    function: depthLimitTest.incremental
+  },
+  '5': {
+    name: 'Rate Limit Test',
+    function: rateLimitTest
+  },
+  '6': {
+    name: 'Query Batch Test',
+    function: batchTest
+  }
+  // add more tests here to add them to the terminal options
+};
+
+function runTest(testKey, rl) {
+  console.log(`\nRunning ${tests[testKey].name}\n`);
+  tests[testKey].function(() => {
+    console.log('Choose another test or press Q to exit.');
+    rl.close(); // Close the current readline interface
+    listTestsAndRunSelection(); // Return to the main menu
+  });
+}
+
+
+function listTestsAndRunSelection() {
+  console.log(bold('\n•───────• Welcome to Qevlar •───────•'));
+  console.log(yellowBold('\nAvailable Tests:'));
+  console.log(darkBold('═══════════════════════════════'))
+  Object.keys(tests).forEach(key => {
+    console.log(`${key}: ${tests[key].name}`);
+  });
+  console.log('Q: Exit qevlar testing library');
+  console.log(darkBold('═══════════════════════════════'))
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  rl.question('\nEnter the number of the test to run or Q to quit: \n', (input) => {
+    const testKey = input.trim().toUpperCase();
+
+    if (testKey === 'Q') {
+      console.log(redBold('\nThank you for using'));
+      console.log(darkHighlight(`${qevlarLogo}`));
+      console.log(redBold('\nExiting...'));
+      rl.close(); // Close the readline interface and exit
+    } else if (tests[testKey]) {
+      runTest(testKey, rl); // Pass the readline interface to the runTest function
+    } else {
+      console.log('Invalid selection.');
+      rl.close(); // Close the readline interface and show the menu again
+      listTestsAndRunSelection();
+    }
+  });
+}
+
+listTestsAndRunSelection();
