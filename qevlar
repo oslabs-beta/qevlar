@@ -76,7 +76,10 @@ function runTest(testKey, rl) {
 }
 
 //function to populate config file
-function generateConfig(url) {}
+function generateConfig(url) {
+  //i: url
+  //o: config file
+}
 
 //higher order function for listing and running tests
 function listTestsAndRunSelection() {
@@ -85,17 +88,22 @@ function listTestsAndRunSelection() {
 
   //print welcome message
   console.log(bold('\n•───────• Welcome to Qevlar •───────•'));
+
   //print list of all available tests
   console.log(yellowBold('\nAvailable Tests:'));
+
   //styling on message in terminal
   console.log(darkBold('═══════════════════════════════'));
-  //convert test object into array of keys
+
+  //iterate through obj using for in loop
   for (let key in tests) {
     //print key and test
     console.log(`${key}: ${tests[key].name}`);
   }
+
   //print quit option
   console.log('Q: Exit qevlar testing library');
+
   //terminal styling
   console.log(darkBold('═══════════════════════════════'));
 
@@ -104,6 +112,8 @@ function listTestsAndRunSelection() {
     input: process.stdin,
     output: process.stdout,
   });
+
+  rl.question('\nPlease submit your link to your API: \n');
 
   //question function
   rl.question(
@@ -121,7 +131,9 @@ function listTestsAndRunSelection() {
         console.log(redBold('\nThank you for using'));
         console.log(darkHighlight(`${qevlarLogo}`));
         console.log(redBold('\nExiting...'));
+
         rl.close(); // Close the readline interface and exit
+
         //else if key is found in test object
       } else if (tests[testKey]) {
         //invoke runTest function passing in testKey and rl obj
@@ -131,8 +143,10 @@ function listTestsAndRunSelection() {
       } else {
         //print invalid selection
         console.log('Invalid selection.');
+
         //close interface
         rl.close(); // Close the readline interface and show the menu again
+
         //re-open interface
         listTestsAndRunSelection();
       }
