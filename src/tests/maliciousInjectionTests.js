@@ -53,7 +53,7 @@ maliciousInjectionTest.SQL = (returnToTestMenu) => {
     },
     body: JSON.stringify({
       query: `query {
-         ${config.TOP_LEVEL_FIELD}(id: 1) {
+         users(id: 1) {
           id
          }
        }`
