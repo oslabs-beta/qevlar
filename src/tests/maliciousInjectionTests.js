@@ -55,6 +55,8 @@ maliciousInjectionTest.SQL = (returnToTestMenu) => {
       query: `query {
          users(id: 1) {
           id
+          email
+          country
          }
        }`
     })
@@ -128,7 +130,7 @@ maliciousInjectionTest.XSS = (returnToTestMenu) => {
 maliciousInjectionTest.OSCommand = (returnToTestMenu) => {
 
 }
-maliciousInjectionTest.XSS();
 // maliciousInjectionTest.XSS();
+maliciousInjectionTest.SQL();
 
 module.exports = maliciousInjectionTest;
