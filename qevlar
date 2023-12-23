@@ -1,16 +1,17 @@
 #!/usr/bin/env node // => script to remove .js from file call
 
-const { redBold, darkHighlight, bold, underlined, darkBold, yellowBold } = require('./color.js') // => import needed colors here
+const { whiteOut, redBold, darkHighlight, bold, underlined, darkBold, yellowBold } = require('./color.js') // => import needed colors here
 const readline = require('readline'); // => console interaction module
 const qevlarLogo = `
-                                                  
-██████  ███████ ██    ██ ██       █████  ██████  
+
+ ██████  ███████ ██    ██ ██       █████  ██████ 
 ██    ██ ██      ██    ██ ██      ██   ██ ██   ██ 
 ██    ██ █████   ██    ██ ██      ███████ ██████  
 ██ ▄▄ ██ ██       ██  ██  ██      ██   ██ ██   ██ 
  ██████  ███████   ████   ███████ ██   ██ ██   ██ 
     ▀▀                                            
 `; // => console qevlar logo
+
 
 const { fieldDuplicationTest } = require('./src/tests/fieldDuplicationTest.js');
 const { adaptiveRateLimitingTest } = require('./src/tests/adaptiveRateLimitingTest.js');
@@ -44,12 +45,11 @@ const tests = {
   '6': {
     name: 'Query Batch Test',
     function: batchTest
-  }
-  // add more tests here to add them to the terminal options
+  },
 };
 
 function runTest(testKey, rl) {
-  console.log(`\nRunning ${tests[testKey].name}\n`);
+  console.log(`\nRunning ${tests[testKey].name}...\n`);
   tests[testKey].function(() => {
     console.log('Choose another test or press Q to exit.');
     rl.close(); // Close the current readline interface
@@ -59,7 +59,7 @@ function runTest(testKey, rl) {
 
 
 function listTestsAndRunSelection() {
-  console.log(bold('\n•───────• Welcome to Qevlar •───────•'));
+  console.log(bold('\n\n><><><><><>< ' + bold('W E L C O M E  T O  Q E V L A R') + ' ><><><><><><\n'));
   console.log(yellowBold('\nAvailable Tests:'));
   console.log(darkBold('═══════════════════════════════'))
   Object.keys(tests).forEach(key => {
@@ -78,7 +78,7 @@ function listTestsAndRunSelection() {
 
     if (testKey === 'Q') {
       console.log(redBold('\nThank you for using'));
-      console.log(darkHighlight(`${qevlarLogo}`));
+      console.log(`${qevlarLogo}`);
       console.log(redBold('\nExiting...'));
       rl.close(); // Close the readline interface and exit
     } else if (tests[testKey]) {
@@ -89,6 +89,7 @@ function listTestsAndRunSelection() {
       listTestsAndRunSelection();
     }
   });
+
 }
 
 listTestsAndRunSelection();

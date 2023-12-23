@@ -82,7 +82,6 @@ const color = {
   highlight: str => '\u001b[' + `7m${str}` + '\u001b[0m', //white highlight 
   underlined: str => '\u001b[' + `4m${str}` + '\u001b[0m', //underlined 
   whiteOut: str => '\u001b[' + `7;8m${str}` + '\u001b[0m', // white block
-
 };
 
 // const str = 'Test passed';
