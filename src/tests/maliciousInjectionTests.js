@@ -27,7 +27,16 @@ try {
 
 const maliciousInjectionTest = {};
 
-maliciousInjectionTest.SQL = (returnToTestMenu) => {
+maliciousInjectionTest.SQL = async (returnToTestMenu) => {
+
+  if (!config.SQL) {
+    console.log('SQL config variable must be set to true to execute SQL injection test.')
+  }
+
+  let successfulQuery = true;
+  const blockedInjections = [];
+  const allowedInjections = [];
+
   const potentiallyMaliciousSQL = [
     '1=1',
     `' OR`,
@@ -36,34 +45,182 @@ maliciousInjectionTest.SQL = (returnToTestMenu) => {
     'DROP TABLE',
     'UNION SELECT null',
     'SELECT sql FROM sqlite_schema',
-    `SELECT group_concat(tbl_name) FROM sqlite_master WHERE type='table' and tbl_name NOT like 'sqlite_%'`
+    `SELECT group_concat(tbl_name) FROM sqlite_master WHERE type='table' and tbl_name NOT like 'sqlite_%'`,
+    'OR 1=0',
+    'OR x=x',
+    'OR x=y',
+    'OR 1=1#',
+    'OR 1=0#',
+    'OR x=x#',
+    'OR" x=y#', //purposefully blocked, added double quote
+    'OR 1=1-- ',
+    'OR 1=0-- ',
+    'OR x=x-- ',
+    'OR x=y--',
+    'HAVING 1=1',
+    'HAVING 1=0',
+    'HAVING 1=1#',
+    'HAVING 1=0#',
+    'HAVING 1=1--',
+    'HAVING 1=0--',
+    'AND 1=1',
+    'AND 1=0',
+    'AND 1=1--',
+    'AND 1=0--',
+    'AND 1=1#',
+    'AND 1=0#',
+    "AND 1=1 AND '%'='",
+    "AND 1=0 AND '%'='",
+    'AND 1083=1083 AND (1427=1427',
+    'AND 7506=9091 AND (5913=5913',
+    `AND 1083=1083 AND (1427=1427`,
+    'AND 7506=9091 AND (5913=5913',
+    'AND 7300=7300 AND (pKlZ=pKlZ',
+    'AND 7300=7300 AND (pKlZ=pKlY',
+    'AS INJECTX WHERE 1=1 AND 1=1',
+    'AS INJECTX WHERE 1=1 AND 1=0',
+    'AS INJECTX WHERE 1=1 AND 1=1#',
+    'AS INJECTX WHERE 1=1 AND 1=0#',
+    'AS INJECTX WHERE 1=1 AND 1=1--',
+    'AS INJECTX WHERE 1=1 AND 1=0--',
+    'WHERE 1=1 AND 1=1',
+    'WHERE 1=1 AND 1=0',
+    'WHERE 1=1 AND 1=1#',
+    'WHERE 1=1 AND 1=0#',
+    'WHERE 1=1 AND 1=1--',
+    'WHERE 1=1 AND 1=0--',
+    'ORDER BY 1-- ',
+    'ORDER BY 2-- ',
+    'ORDER BY 3-- ',
+    'ORDER BY 4-- ',
+    'ORDER BY 5-- ',
+    'ORDER BY 6-- ',
+    'ORDER BY 7-- ',
+    'ORDER BY 8-- ',
+    'ORDER BY 9-- ',
+    'ORDER BY 10-- ',
+    'ORDER BY 11-- ',
+    'ORDER BY 12-- ',
+    'ORDER BY 13-- ',
+    'ORDER BY 14-- ',
+    'ORDER BY 15-- ',
+    'ORDER BY 16-- ',
+    'ORDER BY 17-- ',
+    'ORDER BY 18-- ',
+    'ORDER BY 19-- ',
+    'ORDER BY 20-- ',
+    'ORDER BY 21-- ',
+    'ORDER BY 22-- ',
+    'ORDER BY 23-- ',
+    'ORDER BY 24-- ',
+    'ORDER BY 25-- ',
+    'ORDER BY 26-- ',
+    'ORDER BY 27-- ',
+    'ORDER BY 28-- ',
+    'ORDER BY 29-- ',
+    'ORDER BY 30-- ',
+    'ORDER BY 31337--',
+    'ORDER BY 1# ',
+    'ORDER BY 2# ',
+    'ORDER BY 3# ',
+    'ORDER BY 4# ',
+    'ORDER BY 5# ',
+    'ORDER BY 6# ',
+    'ORDER BY 7# ',
+    'ORDER BY 8# ',
+    'ORDER BY 9# ',
+    'ORDER BY 10# ',
+    'ORDER BY 11# ',
+    'ORDER BY 12# ',
+    'ORDER BY 13# ',
+    'ORDER BY 14# ',
+    'ORDER BY 15# ',
+    'ORDER BY 16# ',
+    'ORDER BY 17# ',
+    'ORDER BY 18# ',
+    'ORDER BY 19# ',
+    'ORDER BY 20# ',
+    'ORDER BY 21# ',
+    'ORDER BY 22# ',
+    'ORDER BY 23# ',
+    'ORDER BY 24# ',
+    'ORDER BY 25# ',
+    'ORDER BY 26# ',
+    'ORDER BY 27# ',
+    'ORDER BY 28# ',
+    'ORDER BY 29# ',
+    'ORDER BY 30#',
+    'ORDER BY 31337#',
+    '1 or sleep(5)#',
+    `' or sleep(5)#`,
+    `' or sleep(5)#`,
+    `' or sleep(5)='`,
+    `' or sleep(5)='`,
+    '1) or sleep(5)#',
+    'ORDER BY SLEEP(5)',
+    'ORDER BY SLEEP(5)--',
+    'ORDER BY SLEEP(5)#',
+    `ORDER BY 1,SLEEP(5),BENCHMARK(1000000,MD5('A'))`,
+    `ORDER BY 1,SLEEP(5),BENCHMARK(1000000,MD5('A')),4`,
+    'UNION ALL SELECT 1',
+    'UNION ALL SELECT 1,2',
+    'UNION ALL SELECT 1,2,3;',
+    'UNION ALL SELECT 1-- ',
+    `'admin' --`,
+    `admin' #`,
+    `'admin'/*`,
+    `'admin' or '1'='1`,
   ];
+
   /** 
-  //TODO: 
-  
-  Mutation works. data doesn't persist (that's fine). try and find a generic query that
-  we can insert all sorts of malicious SQL (and others) into 
-  (I think we could iterate through potentially malicious snippets and try a request with each)
+  //TODO: Figure out how user will configure this test to their API (what config variables are needed)
+          probably will need:
+          table name
+          one column name? (or just use primary key/id, check if this is universal to all SQL dbs)
   */
 
-  fetch(config.API_URL, {
-    method: 'POST',
-    headers: {
-      "content-type": "application/json"
-    },
-    body: JSON.stringify({
-      query: `query {
-         users(id: 1) {
-          id
-          email
-          country
-         }
-       }`
+  //Query db once for each snippet in potentiallyMaliciousSQL array
+  for (const maliciousSnippet of potentiallyMaliciousSQL) {
+    // if (!successfulQuery) return; //previous query was blocked, no need to continue test
+    await fetch(config.API_URL, {
+      method: 'POST',
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({
+        query: `query {
+           users(sql: "${maliciousSnippet}") {
+            id
+            email
+            country
+           }
+         }`
+      })
     })
-  })
-    .then((res) => res.json())
-    .then((res) => JSON.stringify(res))
-    .then((res) => console.log('res: ', res));
+      // .then((res) => {
+      //   console.log('maliciousSnippet sent: ', maliciousSnippet)
+      //   return res.json();
+      // })
+      // .then((res) => JSON.stringify(res))
+      // .then((res) => console.log('res: \n', res, '\n'))
+      .then((res) => {
+        // console.log(yellowBold(italic('Testing malicious snippet... ')), dark(`${maliciousSnippet}`));
+        if (!res.ok) {
+          successfulQuery = false;
+          blockedInjections.push(maliciousSnippet);
+          // console.log(greenBold('Test Passed: '), highlight('Query blocked, possible that malicious snippet was blocked.'))
+          // return;
+        }
+        else allowedInjections.push(maliciousSnippet + '\n');
+      })
+  }
+  console.log(underlined(greenBold('\nPotentially malicious queries blocked: \n\n')), blockedInjections);
+  console.log(underlined(redBold('\nPotentially malicious queries allowed: \n\n')), red(allowedInjections));
+
+  //if next line is reached, all queries were allowed to go through, meaning API is vulnerable
+  // if (successfulQuery) {
+  //   console.log(redBold(underlined('\nTest failed: \n')), highlight('\nQueries with potentially malicious SQL injections not blocked.\n'))
+  // }
 }
 
 maliciousInjectionTest.noSQL = (returnToTestMenu) => {
