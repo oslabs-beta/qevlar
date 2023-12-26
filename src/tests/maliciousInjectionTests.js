@@ -30,7 +30,7 @@ const maliciousInjectionTest = {};
 maliciousInjectionTest.SQL = async (returnToTestMenu) => {
 
   if (!config.SQL) {
-    console.log('SQL config variable must be set to true to execute SQL injection test.')
+    console.log('SQL config variable must be set to boolean true to execute SQL injection test.')
   }
 
   let successfulQuery = true;
@@ -177,11 +177,11 @@ maliciousInjectionTest.SQL = async (returnToTestMenu) => {
           probably will need:
           table name
           one column name? (or just use primary key/id, check if this is universal to all SQL dbs)
+  //TODO: All queries are getting blocked since I added config variables. Look into this.
   */
 
   //Query db once for each snippet in potentiallyMaliciousSQL array
   for (const maliciousSnippet of potentiallyMaliciousSQL) {
-    // if (!successfulQuery) return; //previous query was blocked, no need to continue test
     await fetch(config.API_URL, {
       method: 'POST',
       headers: {
@@ -189,27 +189,16 @@ maliciousInjectionTest.SQL = async (returnToTestMenu) => {
       },
       body: JSON.stringify({
         query: `query {
-           users(sql: "${maliciousSnippet}") {
-            id
-            email
-            country
+           ${config.SQL_TABLE_NAME}(sql: "${maliciousSnippet}") {
+            ${config.SQL_COLUMN_NAME}
            }
          }`
       })
     })
-      // .then((res) => {
-      //   console.log('maliciousSnippet sent: ', maliciousSnippet)
-      //   return res.json();
-      // })
-      // .then((res) => JSON.stringify(res))
-      // .then((res) => console.log('res: \n', res, '\n'))
       .then((res) => {
-        // console.log(yellowBold(italic('Testing malicious snippet... ')), dark(`${maliciousSnippet}`));
         if (!res.ok) {
           successfulQuery = false;
           blockedInjections.push(maliciousSnippet);
-          // console.log(greenBold('Test Passed: '), highlight('Query blocked, possible that malicious snippet was blocked.'))
-          // return;
         }
         else allowedInjections.push(maliciousSnippet + '\n');
       })

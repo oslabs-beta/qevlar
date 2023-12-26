@@ -6,5 +6,7 @@
   "QUERY_LIMIT": 50,
   "WINDOW": 1000,
   "QUERY_DEPTH_LIMIT": 5,
-  "SQL": true
+  "SQL": true,
+  "SQL_TABLE_NAME": "users",
+  "SQL_COLUMN_NAME": "id"
 }
