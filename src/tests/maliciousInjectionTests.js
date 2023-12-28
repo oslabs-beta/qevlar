@@ -180,6 +180,7 @@ maliciousInjectionTest.SQL = async (returnToTestMenu) => {
   //TODO: All queries are getting blocked since I added config variables. Look into this.
   */
 
+
   //Query db once for each snippet in potentiallyMaliciousSQL array
   for (const maliciousSnippet of potentiallyMaliciousSQL) {
     await fetch(config.API_URL, {
