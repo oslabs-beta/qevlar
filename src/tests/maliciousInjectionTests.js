@@ -20,7 +20,7 @@ let config = {};
 try {
   const configFile = fs.readFileSync(configPath, 'utf8');
   // Set config object
-  config = JSON.parse(configFile);
+  config = JSON.parse(configFile)
 } catch (error) {
   console.error('Error reading config file:', error);
 }
@@ -31,6 +31,7 @@ maliciousInjectionTest.SQL = async (returnToTestMenu) => {
 
   if (!config.SQL) {
     console.log('SQL config variable must be set to boolean true to execute SQL injection test.')
+    return;
   }
 
   let successfulQuery = true;
@@ -38,6 +39,7 @@ maliciousInjectionTest.SQL = async (returnToTestMenu) => {
   const allowedInjections = [];
 
   const potentiallyMaliciousSQL = [
+    'Block me!"',//purposefully blocked, added double quote
     '1=1',
     `' OR`,
     'select sqlite_version()',
@@ -52,7 +54,7 @@ maliciousInjectionTest.SQL = async (returnToTestMenu) => {
     'OR 1=1#',
     'OR 1=0#',
     'OR x=x#',
-    'OR" x=y#', //purposefully blocked, added double quote
+    'OR x=y#',
     'OR 1=1-- ',
     'OR 1=0-- ',
     'OR x=x-- ',
@@ -172,15 +174,6 @@ maliciousInjectionTest.SQL = async (returnToTestMenu) => {
     `'admin' or '1'='1`,
   ];
 
-  /** 
-  //TODO: Figure out how user will configure this test to their API (what config variables are needed)
-          probably will need:
-          table name
-          one column name? (or just use primary key/id, check if this is universal to all SQL dbs)
-  //TODO: All queries are getting blocked since I added config variables. Look into this.
-  */
-
-
   //Query db once for each snippet in potentiallyMaliciousSQL array
   for (const maliciousSnippet of potentiallyMaliciousSQL) {
     await fetch(config.API_URL, {
@@ -206,11 +199,6 @@ maliciousInjectionTest.SQL = async (returnToTestMenu) => {
   }
   console.log(underlined(greenBold('\nPotentially malicious queries blocked: \n\n')), blockedInjections);
   console.log(underlined(redBold('\nPotentially malicious queries allowed: \n\n')), red(allowedInjections));
-
-  //if next line is reached, all queries were allowed to go through, meaning API is vulnerable
-  // if (successfulQuery) {
-  //   console.log(redBold(underlined('\nTest failed: \n')), highlight('\nQueries with potentially malicious SQL injections not blocked.\n'))
-  // }
 }
 
 maliciousInjectionTest.noSQL = (returnToTestMenu) => {
@@ -232,52 +220,50 @@ maliciousInjectionTest.noSQL = (returnToTestMenu) => {
     .then((res) => console.log('res: ', res));
 }
 
-maliciousInjectionTest.XSS = (returnToTestMenu) => {
+maliciousInjectionTest.XSS = async (returnToTestMenu) => {
 
-  //TODO: TURN THIS INTO MALICIOUS INJECTION
-  //create query body based on depth limit
-  function setDynamicQueryBody() {
-    let dynamicQueryBody = `${config.TOP_LEVEL_FIELD}(id: ${config.ANY_TOP_LEVEL_FIELD_ID}) {`;
-    let depth = 1;
-    let endOfQuery = 'id}';
-    let lastFieldAddedToQuery = config.TOP_LEVEL_FIELD;
+  let successfulQuery = true;
+  const blockedInjections = [];
+  const allowedInjections = [];
 
-    //alternate adding fields that can reference each other
-    while (depth < config.QUERY_DEPTH_LIMIT) {
-      if (lastFieldAddedToQuery == config.TOP_LEVEL_FIELD) {
-        dynamicQueryBody += `${config.CIRCULAR_REF_FIELD} {`;
-        lastFieldAddedToQuery = config.CIRCULAR_REF_FIELD;
-      }
-      else if (lastFieldAddedToQuery == config.CIRCULAR_REF_FIELD) {
-        dynamicQueryBody += `${config.TOP_LEVEL_FIELD} {`;
-        lastFieldAddedToQuery = config.TOP_LEVEL_FIELD;
-      }
-      endOfQuery += '}';
-      depth += 1;
-    }
-    return dynamicQueryBody + endOfQuery;
-  }
+  const potentiallyMaliciousXSS = [
+    'Block me!"',//purposefully blocked, added double quote
 
-  fetch(config.API_URL, {
-    method: 'POST',
-    headers: {
-      "content-type": "application/json"
-    },
-    body: JSON.stringify({
-      query: `query depthLimitTestDynamic {
-        ${dynamicQueryBody}
-      }`
+  ];
+
+  //Query db once for each snippet in potentiallyMaliciousSQL array
+  for (const maliciousSnippet of potentiallyMaliciousXSS) {
+    await fetch(config.API_URL, {
+      method: 'POST',
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({
+        query: `query {
+           ${config.TOP_LEVEL_FIELD}(id: ${config.ANY_TOP_LEVEL_FIELD_ID}, xss: "${maliciousSnippet}") {
+            id
+           }
+         }`
+      })
     })
-  })
-    .then((res) => res.json())
-    .then((res) => JSON.stringify(res))
-    .then((res) => console.log('res: ', res));
+      .then((res) => {
+        if (!res.ok) {
+          successfulQuery = false;
+          blockedInjections.push(maliciousSnippet);
+        }
+        else allowedInjections.push(maliciousSnippet + '\n');
+      })
+  }
+  console.log(underlined(greenBold('\nPotentially malicious queries blocked: \n\n')), blockedInjections);
+  console.log(underlined(redBold('\nPotentially malicious queries allowed: \n\n')), red(allowedInjections));
+
 }
 
 maliciousInjectionTest.OSCommand = (returnToTestMenu) => {
 
 }
-// maliciousInjectionTest.XSS();
-maliciousInjectionTest.SQL();
+
+// maliciousInjectionTest.SQL();
+maliciousInjectionTest.XSS();
 
 module.exports = maliciousInjectionTest;
