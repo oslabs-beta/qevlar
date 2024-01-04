@@ -1,7 +1,7 @@
 #!/usr/bin/env node // => script to remove .js from file call
 
-const { whiteOut, redBold, darkHighlight, bold, underlined, darkBold, yellowBold } = require('./color.js') // => import needed colors here
-const readline = require('readline'); // => console interaction module
+const { whiteOut, redBold, darkHighlight, bold, underlined, darkBold, yellowBold } = require('./color.js')
+const readline = require('readline');
 const qevlarLogo = `
 
  ██████  ███████ ██    ██ ██       █████  ██████ 
@@ -10,7 +10,7 @@ const qevlarLogo = `
 ██ ▄▄ ██ ██       ██  ██  ██      ██   ██ ██   ██ 
  ██████  ███████   ████   ███████ ██   ██ ██   ██ 
     ▀▀                                            
-`; // => console qevlar logo
+`
 
 
 const { fieldDuplicationTest } = require('./src/tests/fieldDuplicationTest.js');
@@ -18,8 +18,7 @@ const { adaptiveRateLimitingTest } = require('./src/tests/adaptiveRateLimitingTe
 const depthLimitTest = require('./src/tests/depthLimitTests.js');
 const rateLimitTest = require('./src/tests/rateLimitTest.js');
 const { batchTest } = require('./src/tests/queryBatchTest.js');
-// ...
-// import other tests here
+const maliciousInjectionTest = require('./src/tests/maliciousInjectionTests.js');
 
 const tests = {
   '1': {
@@ -46,6 +45,14 @@ const tests = {
     name: 'Query Batch Test',
     function: batchTest
   },
+  '7': {
+    name: 'SQL Malicious Injection Test',
+    function: maliciousInjectionTest.SQL
+  },
+  '8': {
+    name: 'Cross-site Scripting Injection Test',
+    function: maliciousInjectionTest.XSS
+  }
 };
 
 function runTest(testKey, rl) {
