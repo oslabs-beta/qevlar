@@ -198,13 +198,14 @@ maliciousInjectionTest.SQL = async (returnToTestMenu) => {
   }
   console.log(underlined(greenBold('\nPotentially malicious queries blocked: \n\n')), blockedInjections);
   console.log(underlined(redBold('\nPotentially malicious queries allowed: \n\n')), red(allowedInjections));
+  if (returnToTestMenu) returnToTestMenu();
 }
 
 
 maliciousInjectionTest.XSS = async (returnToTestMenu) => {
 
   let successfulQuery = true;
-  const blockedInjections = [];
+  const blockedInjections = ['Block me!'];
   const allowedInjections = [];
 
   const potentiallyMaliciousXSS = [
@@ -335,6 +336,7 @@ maliciousInjectionTest.XSS = async (returnToTestMenu) => {
   }
   console.log(underlined(greenBold('\nPotentially malicious queries blocked: \n\n')), blockedInjections);
   console.log(underlined(redBold('\nPotentially malicious queries allowed: \n\n')), red(allowedInjections));
+  if (returnToTestMenu) returnToTestMenu();
 
 }
 
