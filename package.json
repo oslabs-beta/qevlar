@@ -2,18 +2,14 @@
   "name": "graphql",
   "version": "1.0.0",
   "description": "",
-  "main": "./src/schema.js",
+  "main": "qevlar",
   "scripts": {
-    "start": "nodemon schema.js"
+    "start": "nodemon qevlar",
+    "qevlar": "nodemon qevlar"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "express": "^4.18.2",
-    "express-graphql": "^0.12.0",
-    "graphql": "^15.8.0"
-  },
   "devDependencies": {
     "nodemon": "^3.0.2"
   }
