@@ -7,6 +7,7 @@
   "QUERY_RATE_LIMIT": 100,
   "WINDOW": 1000,
   "QUERY_DEPTH_LIMIT": 5,
+  "NoSQL": true,
   "SQL": true,
   "SQL_TABLE_NAME": "users",
   "SQL_COLUMN_NAME": "id",
