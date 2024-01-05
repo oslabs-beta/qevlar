@@ -3,21 +3,42 @@ const readline = require('readline'); // => console interaction module
 const fs = require('fs');
 const path = require('path');
 
-//getCircularRefField function
-const getCircularRefField = (
-  schema,
-  visited = new Set(),
-  currentPath = new Set()
-) => {
+// //getCircularRefField function
+const getCircularRefField = (schema) => {
   console.log('schema', schema);
-
-  const types = schema.types;
-
-  types.forEach((type) => {
-    console.log('type name', type.name);
-    console.log('type field', type.fields);
+  const visited = new Set();
+  //create variable, 'circularRef', assign null to its value
+  let circularRef = null;
+  console.log('typesArray', schema.types);
+  //iterate through array of types in schema object
+  schema.types.forEach((type) => {
+    //we need to find relevant schema types that aren't generic data types
+    //these can be found in the root query so if the description is root query we go in there
+    if (type.description === 'Root Query') {
+      //iterate through fields array in type object
+      type.fields.forEach((field) => {
+        //if name key is not null
+        if (field.type.name) {
+          //add that to our set object
+          visited.add(field.type.name);
+        }
+      });
+    }
+    //we need to iterate through valid fields array in type object
+    //make sure fields is not null
+    if (type.fields) {
+      //iterate through fields array
+      type.fields.forEach((field) => {
+        //if set object has a value of name that matches
+        if (visited.has(field.type.name)) {
+          //assign that to circularRef
+          circularRef = field.type.name;
+        }
+      });
+    }
   });
-  //   console.log(visited);
+
+  return circularRef;
 };
 
 getTopAndSubField = (schema) => {
@@ -32,6 +53,7 @@ getTopAndSubField = (schema) => {
 
   //get circularRef field
   const circularRefField = getCircularRefField(schema.data.__schema);
+  // console.log('circularRefField', circularRefField);
 
   //iterate through types array
   types.forEach((type) => {
@@ -55,6 +77,7 @@ getTopAndSubField = (schema) => {
 
   config.TOP_LEVEL_FIELD = topField;
   config.SUB_FIELD = subField;
+  config.CIRCULAR_REF_FIELD = circularRefField;
 };
 const introspectionQuery = `{
     __schema {

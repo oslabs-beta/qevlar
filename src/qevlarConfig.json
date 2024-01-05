@@ -3,7 +3,7 @@
   "TOP_LEVEL_FIELD": "meal",
   "SUB_FIELD": "id",
   "ANY_TOP_LEVEL_FIELD_ID": 1,
-  "CIRCULAR_REF_FIELD": "books",
+  "CIRCULAR_REF_FIELD": "Food",
   "QUERY_RATE_LIMIT": 100,
   "WINDOW": 1000,
   "QUERY_DEPTH_LIMIT": 5,

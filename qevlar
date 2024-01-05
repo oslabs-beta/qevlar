@@ -184,36 +184,20 @@ async function generateConfig() {
       output: process.stdout,
     });
 
-    rl.question(
-      '\nWould you like us to generate your config file (y/n)?:\n',
-      async (input) => {
-        input = input.trim().toLowerCase();
-        if (input === 'y') {
-          rl.question(
-            '\nPlease submit the url to your API:\n',
-            async (apiUrl) => {
-              try {
-                const result = await getSchema(apiUrl);
-                // console.log('schema resolved successfully', result);
-                if (result === 'success') {
-                  rl.close();
-                  resolve(); // Resolve the promise when done
-                  welcomeToQevlar();
-                }
-              } catch (error) {
-                console.log('error in getSchema', error);
-                rl.close();
-                reject(error); // Reject the promise if there's an error
-              }
-            }
-          );
-        } else {
+    rl.question('\nPlease submit the url to your API:\n', async (apiUrl) => {
+      try {
+        const result = await getSchema(apiUrl);
+        // console.log('schema resolved successfully', result);
+        if (result === 'success') {
           rl.close();
-          console.log('user is gonna do it themselves');
-          resolve(); // Resolve even if the user chooses not to generate the config
+          resolve(); // Resolve the promise when done
         }
+      } catch (error) {
+        console.log('error in getSchema', error);
+        rl.close();
+        reject(error); // Reject the promise if there's an error
       }
-    );
+    });
   });
 }
 
