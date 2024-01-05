@@ -1,24 +1,24 @@
 #!/usr/bin/env node // => script to remove .js from file call
 
 const {
+  whiteOut,
   redBold,
   darkHighlight,
   bold,
   underlined,
   darkBold,
   yellowBold,
-} = require('./color.js'); // => import needed colors here
-const readline = require('readline'); // => console interaction module
-const fs = require('fs');
+} = require('./color.js');
+const readline = require('readline');
 const qevlarLogo = `
-                                                  
-██████  ███████ ██    ██ ██       █████  ██████  
+
+ ██████  ███████ ██    ██ ██       █████  ██████ 
 ██    ██ ██      ██    ██ ██      ██   ██ ██   ██ 
 ██    ██ █████   ██    ██ ██      ███████ ██████  
 ██ ▄▄ ██ ██       ██  ██  ██      ██   ██ ██   ██ 
  ██████  ███████   ████   ███████ ██   ██ ██   ██ 
     ▀▀                                            
-`; // => console qevlar logo
+`;
 
 const { fieldDuplicationTest } = require('./src/tests/fieldDuplicationTest.js');
 const {
@@ -29,8 +29,7 @@ const rateLimitTest = require('./src/tests/rateLimitTest.js');
 const getSchema = require('./src/getSchema.js');
 const { batchTest } = require('./src/tests/queryBatchTest.js');
 
-// ...
-// import other tests here
+const maliciousInjectionTest = require('./src/tests/maliciousInjectionTests.js');
 //object of tests
 const tests = {
   0: {
@@ -61,7 +60,14 @@ const tests = {
     name: 'Query Batch Test',
     function: batchTest,
   },
-  // add more tests here to add them to the terminal options
+  7: {
+    name: 'SQL Malicious Injection Test',
+    function: maliciousInjectionTest.SQL,
+  },
+  8: {
+    name: 'Cross-site Scripting Injection Test',
+    function: maliciousInjectionTest.XSS,
+  },
 };
 
 //runTests function
@@ -70,7 +76,7 @@ function runTest(testKey, rl) {
   //o: test
 
   //prints message to user indicating which test is being run
-  console.log(`\nRunning ${tests[testKey].name}\n`);
+  console.log(`\nRunning ${tests[testKey].name}...\n`);
 
   //match testKey param to key in tests obj and invoke its function value
   tests[testKey].function(() => {
@@ -99,7 +105,13 @@ function listTestsAndRunSelection() {
   //o: list of tests to choose from
 
   //print welcome message
-  console.log(bold('\n•───────• Welcome to Qevlar •───────•'));
+  console.log(
+    bold(
+      '\n\n><><><><><>< ' +
+        bold('W E L C O M E  T O  Q E V L A R') +
+        ' ><><><><><><\n'
+    )
+  );
 
   //print list of all available tests
   console.log(yellowBold('\nAvailable Tests:'));
@@ -139,7 +151,7 @@ function listTestsAndRunSelection() {
       if (testKey === 'Q') {
         //messages printed to user
         console.log(redBold('\nThank you for using'));
-        console.log(darkHighlight(`${qevlarLogo}`));
+        console.log(`${qevlarLogo}`);
         console.log(redBold('\nExiting...'));
 
         rl.close(); // Close the readline interface and exit
