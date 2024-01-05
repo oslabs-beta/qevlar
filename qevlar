@@ -9,6 +9,7 @@ const {
   yellowBold,
 } = require('./color.js'); // => import needed colors here
 const readline = require('readline'); // => console interaction module
+const fs = require('fs');
 const qevlarLogo = `
                                                   
 ██████  ███████ ██    ██ ██       █████  ██████  
@@ -25,12 +26,17 @@ const {
 } = require('./src/tests/adaptiveRateLimitingTest.js');
 const depthLimitTest = require('./src/tests/depthLimitTests.js');
 const rateLimitTest = require('./src/tests/rateLimitTest.js');
+const getSchema = require('./src/getSchema.js');
 const { batchTest } = require('./src/tests/queryBatchTest.js');
+
 // ...
 // import other tests here
-
 //object of tests
 const tests = {
+  0: {
+    name: 'Generate Config',
+    function: generateConfig,
+  },
   1: {
     name: 'Field Duplication Test',
     function: fieldDuplicationTest,
@@ -74,12 +80,18 @@ function runTest(testKey, rl) {
     listTestsAndRunSelection(); // Return to the main menu
   });
 }
+// let hasBeenCalled = false;
+//async function to
+// async function welcomeToQevlar() {
+//   let result;
 
-//function to populate config file
-function generateConfig(url) {
-  //i: url
-  //o: config file
-}
+//   if (!hasBeenCalled) {
+//     result = await generateConfig();
+
+//     hasBeenCalled = true;
+//   }
+//   listTestsAndRunSelection();
+// }
 
 //higher order function for listing and running tests
 function listTestsAndRunSelection() {
@@ -112,8 +124,6 @@ function listTestsAndRunSelection() {
     input: process.stdin,
     output: process.stdout,
   });
-
-  rl.question('\nPlease submit your link to your API: \n');
 
   //question function
   rl.question(
@@ -154,4 +164,46 @@ function listTestsAndRunSelection() {
   );
 }
 
+async function generateConfig() {
+  console.log('i was run!');
+  return new Promise((resolve, reject) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+
+    rl.question(
+      '\nWould you like us to generate your config file (y/n)?:\n',
+      async (input) => {
+        input = input.trim().toLowerCase();
+        if (input === 'y') {
+          rl.question(
+            '\nPlease submit the url to your API:\n',
+            async (apiUrl) => {
+              try {
+                const result = await getSchema(apiUrl);
+                // console.log('schema resolved successfully', result);
+                if (result === 'success') {
+                  rl.close();
+                  resolve(); // Resolve the promise when done
+                  welcomeToQevlar();
+                }
+              } catch (error) {
+                console.log('error in getSchema', error);
+                rl.close();
+                reject(error); // Reject the promise if there's an error
+              }
+            }
+          );
+        } else {
+          rl.close();
+          console.log('user is gonna do it themselves');
+          resolve(); // Resolve even if the user chooses not to generate the config
+        }
+      }
+    );
+  });
+}
+
 listTestsAndRunSelection();
+// welcomeToQevlar();

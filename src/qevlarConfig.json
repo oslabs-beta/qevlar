@@ -1,7 +1,7 @@
 {
   "API_URL": "http://localhost:3000/graphql",
-  "TOP_LEVEL_FIELD": "author",
-  "SUB_FIELD": "name",
+  "TOP_LEVEL_FIELD": "meal",
+  "SUB_FIELD": "id",
   "ANY_TOP_LEVEL_FIELD_ID": 1,
   "CIRCULAR_REF_FIELD": "books",
   "QUERY_RATE_LIMIT": 100,
