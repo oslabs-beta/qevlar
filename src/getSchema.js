@@ -5,11 +5,9 @@ const path = require('path');
 
 // //getCircularRefField function
 const getCircularRefField = (schema) => {
-  console.log('schema', schema);
   const visited = new Set();
   //create variable, 'circularRef', assign null to its value
   let circularRef = null;
-  console.log('typesArray', schema.types);
   //iterate through array of types in schema object
   schema.types.forEach((type) => {
     //we need to find relevant schema types that aren't generic data types
@@ -53,7 +51,6 @@ getTopAndSubField = (schema) => {
 
   //get circularRef field
   const circularRefField = getCircularRefField(schema.data.__schema);
-  // console.log('circularRefField', circularRefField);
 
   //iterate through types array
   types.forEach((type) => {

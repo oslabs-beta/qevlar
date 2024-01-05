@@ -86,18 +86,6 @@ function runTest(testKey, rl) {
     listTestsAndRunSelection(); // Return to the main menu
   });
 }
-// let hasBeenCalled = false;
-//async function to
-// async function welcomeToQevlar() {
-//   let result;
-
-//   if (!hasBeenCalled) {
-//     result = await generateConfig();
-
-//     hasBeenCalled = true;
-//   }
-//   listTestsAndRunSelection();
-// }
 
 //higher order function for listing and running tests
 function listTestsAndRunSelection() {
@@ -187,7 +175,7 @@ async function generateConfig() {
     rl.question('\nPlease submit the url to your API:\n', async (apiUrl) => {
       try {
         const result = await getSchema(apiUrl);
-        // console.log('schema resolved successfully', result);
+
         if (result === 'success') {
           rl.close();
           resolve(); // Resolve the promise when done
@@ -202,4 +190,3 @@ async function generateConfig() {
 }
 
 listTestsAndRunSelection();
-// welcomeToQevlar();
