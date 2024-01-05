@@ -1,7 +1,6 @@
 //import config settings
 const config = require('../qevlarConfig.json');
 
-
 //import colors
 const {
   green,
@@ -56,7 +55,6 @@ const batchLength = config.BATCH_SIZE;
 
 const query = `{ ${config.TOP_LEVEL_FIELD}(id: ${config.ANY_TOP_LEVEL_FIELD_ID}) { ${config.SUB_FIELD} ${config.SUB_FIELD} } }`;
 
-
 // const query = {
 //   // "query": "query " + `"${config.TOP_LEVEL_FIELD} {${config.SUB_FIELD}}}`
 //   query: `query { ${config.TOP_LEVEL_FIELD} { ${config.SUB_FIELD} } }`
@@ -65,7 +63,6 @@ const query = `{ ${config.TOP_LEVEL_FIELD}(id: ${config.ANY_TOP_LEVEL_FIELD_ID})
 // const generateDynamicBatchQuery = (count, baseQuery) => {
 //   return Array.from({ length: count }, () => baseQuery)
 // };
-
 
 const generateDynamicBatchQuery = (count, baseQuery) => {
   const batchQueries = [];
@@ -90,10 +87,7 @@ const batchTest = (returnToTestMenu) => {
   // }));
 
   const batchedQueries = newBatch.map((query) => ({ query }));
-  console.log('batchRequestBody', batchedQueries)
-
-
-
+  console.log('batchRequestBody', batchedQueries);
 
   fetch(url, {
     method: 'POST',
@@ -103,18 +97,19 @@ const batchTest = (returnToTestMenu) => {
     body: JSON.stringify(batchedQueries),
   })
     .then((res) => {
-      console.log('res', res)
+      console.log('res', res);
 
       if (!res.ok) {
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
-      return res.json()
-    }).then((data) => {
-      console.log('batch res', data);
-    }).catch((error) => {
-      console.error('error encountered: ', error);
+      return res.json();
     })
-
+    .then((data) => {
+      console.log('batch res', data);
+    })
+    .catch((error) => {
+      console.error('error encountered: ', error);
+    });
 
   // if (returnToTestMenu) returnToTestMenu();
 };
