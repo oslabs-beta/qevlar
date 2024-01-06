@@ -10,10 +10,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "graphql": "^15.8.0",
-    "graphql-request": "^6.1.0"
-  },
   "devDependencies": {
     "nodemon": "^3.0.2"
   }

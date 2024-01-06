@@ -1,10 +1,18 @@
 {
-  "API_URL": "http://localhost:5000/graphql",
-  "TOP_FIELD": "house",
-  "SUB_FIELD": "charactersInHouse",
-  "QUERY_LIMIT": 50,
+  "API_URL": "http://localhost:3000/graphql",
+  "TOP_LEVEL_FIELD": "meal",
+  "SUB_FIELD": "id",
+  "ANY_TOP_LEVEL_FIELD_ID": 1,
+  "CIRCULAR_REF_FIELD": "Food",
+  "QUERY_RATE_LIMIT": 100,
   "WINDOW": 1000,
-  "QUERY_DEPTH_LIMIT": 7,
+  "QUERY_DEPTH_LIMIT": 5,
+  "NoSQL": true,
+  "SQL": true,
+  "SQL_TABLE_NAME": "users",
+  "SQL_COLUMN_NAME": "id",
   "INITIAL_RATE": 10,
-  "INCREMENT": 10
+  "INCREMENT": 10,
+  "BATCH_SIZE": 10,
+  "TIME_PASSED": 1000
 }
