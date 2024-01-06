@@ -2,7 +2,7 @@
   "API_URL": "http://localhost:3000/graphql",
   "TOP_LEVEL_FIELD": "meal",
   "SUB_FIELD": "id",
-  "ANY_TOP_LEVEL_FIELD_ID": 1,
+  "ANY_TOP_LEVEL_FIELD_ID": "test",
   "CIRCULAR_REF_FIELD": "Food",
   "QUERY_RATE_LIMIT": 100,
   "WINDOW": 1000,

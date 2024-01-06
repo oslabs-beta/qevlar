@@ -28,7 +28,7 @@ function validateConfig(config) {
       console.error(
         highlight(
           redBold(
-            `\nERROR: INVALID TYPE FOR ${key}.\nPlease adjust your qevlar configuration file to properly account for the correct data types. Expected ${
+            `\nERROR: INVALID TYPE FOR ${key}\nPlease adjust your qevlarConfig.json to properly account for the correct data types.\nExpected ${
               expectedTypes[key]
             }, but got ${typeof config[key]}\n`
           )
@@ -36,9 +36,8 @@ function validateConfig(config) {
       );
       return false;
     }
-
-    return true;
   }
+  return true;
 }
 
 module.exports = validateConfig;

@@ -1,9 +1,9 @@
 const config = require("../qevlarConfig.json");
 const { greenBold, highlight, green } = require("../../color");
-const configValidation = require("../tests/configValidation");
+const validateConfig = require("../tests/configValidation");
 
 async function adaptiveRateLimitingTest(returnToTestMenu) {
-  configValidation(config);
+  validateConfig(config);
 
   const query = `{ ${config.TOP_LEVEL_FIELD} { ${config.SUB_FIELD} } }`;
   let rate = config.INITIAL_RATE;
