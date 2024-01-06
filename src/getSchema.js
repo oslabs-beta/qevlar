@@ -39,7 +39,7 @@ const getCircularRefField = (schema) => {
   return circularRef;
 };
 
-getTopAndSubField = (schema) => {
+const getTopAndSubField = (schema) => {
   //extract types array from schema
   const types = schema.data.__schema.types;
 

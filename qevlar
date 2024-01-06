@@ -30,6 +30,7 @@ const {
 const depthLimitTest = require('./src/tests/depthLimitTests.js');
 const rateLimitTest = require('./src/tests/rateLimitTest.js');
 const { batchTest } = require('./src/tests/queryBatchTest.js');
+const getSchema = require('./src/getSchema.js')
 
 const tests = {
   0: {
