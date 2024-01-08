@@ -1,3 +1,5 @@
+<img src="./assets/qevlar_github_banner.png" />
+
 <h1 align="center">Welcome to Qevlar</h1>
 <p>
   <a href="https://www.npmjs.com/package/qevlar" target="_blank">
@@ -16,7 +18,7 @@
 
 > GraphQL Security Testing Library
 
-![Qevlar logo](./assets/qevlar_github-banner.png)
+<!-- ![Qevlar logo](./assets/qevlar_github-banner.png) -->
 
 <!--
 Banner Image
