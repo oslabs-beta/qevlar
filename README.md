@@ -18,7 +18,7 @@
 
 > GraphQL Security Testing Library
 
-<!-- ![Qevlar logo](./assets/qevlar_github-banner.png) -->
+![Qevlar logo](./assets/qevlar_github-banner.png)
 
 <!--
 Banner Image
