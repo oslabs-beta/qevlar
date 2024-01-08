@@ -1,4 +1,4 @@
-const { redBold, highlight } = require("../../color");
+const { redBold, highlight } = require("../color");
 
 function validateConfig(config) {
   const expectedTypes = {

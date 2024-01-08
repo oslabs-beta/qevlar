@@ -1,5 +1,5 @@
 const config = require("../qevlarConfig.json");
-const validateConfig = require("./validateConfig");
+const validateConfig = require("../../__tests__/validateConfig");
 
 const batchTest = (returnToTestMenu) => {
   const url = config.API_URL;

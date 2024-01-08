@@ -1,13 +1,27 @@
 {
-  "name": "graphql",
+  "name": "qevlar",
+  "displayName": "Qevlar",
   "version": "1.0.0",
-  "description": "",
+  "description": "GraphQL Security Testing Library",
+  "keywords": [
+    "graphql",
+    "API",
+    "security",
+    "testing"
+  ],
+  "icon": "assets/qevlar-logo-black.png",
   "main": "qevlar",
   "scripts": {
     "start": "qevlar",
     "qevlar": "qevlar"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oslabs-beta/Qevlar"
+  },
+  "author": "Joshua McDaniel jwilliammcdaniel@gmail.com, Conor Bell conorbell27@gmail.com, Hyung Noh johnhyungilnoh@gmail.com, Landon Osteen landonwyatteosteen@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oslabs-beta/Qevlar/issues"
+  }
 }

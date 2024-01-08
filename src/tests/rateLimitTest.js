@@ -1,6 +1,6 @@
 const { greenBold, highlight, redBold } = require("../../color");
 const config = require("../qevlarConfig.json");
-const validateConfig = require("./validateConfig");
+const validateConfig = require("../../__tests__/validateConfig");
 
 // Tests rate limiting at QUERY_RATE_LIMIT
 async function rateLimitTest(returnToTestMenu) {

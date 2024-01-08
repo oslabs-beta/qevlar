@@ -1,6 +1,6 @@
 const { greenBold, redBold, yellowBold, highlight } = require("../../color");
 const config = require("../qevlarConfig.json");
-const validateConfig = require("./validateConfig");
+const validateConfig = require("../../__tests__/validateConfig");
 
 // Tests vulnerability to field duplication
 async function fieldDuplicationTest(returnToTestMenu) {
