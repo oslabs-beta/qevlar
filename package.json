@@ -4,13 +4,10 @@
   "description": "",
   "main": "qevlar",
   "scripts": {
-    "start": "nodemon qevlar",
-    "qevlar": "nodemon qevlar"
+    "start": "qevlar",
+    "qevlar": "qevlar"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "nodemon": "^3.0.2"
-  }
+  "license": "ISC"
 }

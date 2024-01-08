@@ -1,35 +1,24 @@
-const config = require('./qevlarConfig.json');
-const readline = require('readline'); // => console interaction module
-const fs = require('fs');
-const path = require('path');
+const config = require("./qevlarConfig.json");
+const readline = require("readline");
+const fs = require("fs");
+const path = require("path");
 
-// //getCircularRefField function
+//Find match between types and types referenced in fields to populate CIRCULAR_REF_FIELD in qevlarConfig.json
 const getCircularRefField = (schema) => {
   const visited = new Set();
-  //create variable, 'circularRef', assign null to its value
   let circularRef = null;
-  //iterate through array of types in schema object
   schema.types.forEach((type) => {
-    //we need to find relevant schema types that aren't generic data types
-    //these can be found in the root query so if the description is root query we go in there
-    if (type.description === 'Root Query') {
-      //iterate through fields array in type object
+    if (type.description === "Root Query") {
       type.fields.forEach((field) => {
-        //if name key is not null
         if (field.type.name) {
-          //add that to our set object
           visited.add(field.type.name);
         }
       });
     }
-    //we need to iterate through valid fields array in type object
-    //make sure fields is not null
+
     if (type.fields) {
-      //iterate through fields array
       type.fields.forEach((field) => {
-        //if set object has a value of name that matches
         if (visited.has(field.type.name)) {
-          //assign that to circularRef
           circularRef = field.type.name;
         }
       });
@@ -39,37 +28,28 @@ const getCircularRefField = (schema) => {
   return circularRef;
 };
 
+//Extract types array to populate TOP_LEVEL_FIELD and SUB_FIELD in qevlarConfig.json
 const getTopAndSubField = (schema) => {
-  //extract types array from schema
   const types = schema.data.__schema.types;
 
-  //create variables for root query, top field, top obj type, subfield
   let rootQuery;
   let topField;
   let topObjType;
   let subField;
 
-  //get circularRef field
   const circularRefField = getCircularRefField(schema.data.__schema);
 
-  //iterate through types array
   types.forEach((type) => {
-    //if type name is strictly equal to query
-    if (type.name === 'Query') {
-      //assign type to rootQuery variable
+    if (type.name === "Query") {
       rootQuery = type;
     }
   });
 
-  //get the top field from root query
   topField = rootQuery.fields[0].name;
-  //get the top object type from root query
   topObjType = rootQuery.fields[0].type.name;
 
-  //find the type that matches the topObjType name in the types array
   const getSubField = types.find((type) => type.name === topObjType);
 
-  //assign the name of the first field to subfield
   subField = getSubField.fields[0].name;
 
   config.TOP_LEVEL_FIELD = topField;
@@ -93,28 +73,30 @@ const introspectionQuery = `{
     }
   }`;
 
+// Dynamically generate qevlarConfig.json
 const modifyConig = () => {
   fs.writeFile(
-    path.join(__dirname, './qevlarConfig.json'),
+    path.join(__dirname, "./qevlarConfig.json"),
     JSON.stringify(config, null, 2),
     (err) => {
       if (err) {
-        console.log('error writing to qevlarConfig.json:', err);
+        console.log("error writing to qevlarConfig.json:", err);
       } else {
-        console.log('qevlarConfig.json updated successfully!');
+        console.log("qevlarConfig.json updated successfully!");
       }
     }
   );
 };
 
 const getSchema = (url) => {
+  config.API_URL = url;
   return fetch(url, {
-    method: 'POST',
-    headers: { 'Content-type': 'application/json' },
+    method: "POST",
+    headers: { "Content-type": "application/json" },
     body: JSON.stringify({ query: introspectionQuery }),
   })
     .then((res) => {
-      console.log('res status', res.status);
+      console.log("res status", res.status);
       if (res.status === 200) {
         return res.json();
       }
@@ -123,10 +105,10 @@ const getSchema = (url) => {
       getTopAndSubField(data);
 
       modifyConig();
-      return 'sucess';
+      return "sucess";
     })
     .catch((error) => {
-      console.log('error', error);
+      console.log("error", error);
     });
 };
 
