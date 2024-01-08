@@ -1,6 +1,6 @@
-const { greenBold, highlight, green } = require("../../color");
-const config = require("../qevlarConfig.json");
-const validateConfig = require("../../__tests__/validateConfig");
+const { greenBold, highlight, green } = require('../../color');
+const config = require('../qevlarConfig.json');
+const validateConfig = require('../../__tests__/validateConfig');
 
 // Tests from INITIAL_RATE up to QUERY_RATE_LIMIT at each INCREMENT
 async function adaptiveRateLimitingTest(returnToTestMenu) {
@@ -10,11 +10,11 @@ async function adaptiveRateLimitingTest(returnToTestMenu) {
   let rate = config.INITIAL_RATE;
   let success = true;
 
-  console.log("Starting Adaptive Rate Limiting Test...");
+  console.log('Starting Adaptive Rate Limiting Test...');
 
   while (success && rate < config.QUERY_RATE_LIMIT) {
     console.log(
-      green("Testing at rate: ") + `${rate} requests per unit time...`
+      green('Testing at rate: ') + `${rate} requests per unit time...`
     );
 
     try {
@@ -25,8 +25,8 @@ async function adaptiveRateLimitingTest(returnToTestMenu) {
       rate += config.INCREMENT;
     } catch (error) {
       success = false;
-      console.log(greenBold("\nTest completed\n"));
-      console.log(highlight("Summary of Test Failure:"));
+      console.log(greenBold('\nTest completed\n'));
+      console.log(highlight('Summary of Test Failure:'));
       console.log(`- Failed at rate: ${rate} requests per unit time.`);
       console.log(`- Error Message: ${error.message}`);
       console.log(
@@ -37,12 +37,12 @@ async function adaptiveRateLimitingTest(returnToTestMenu) {
 
   if (!success) {
     console.log(
-      "Consider adjusting the rate limits for better performance or resilience."
+      'Consider adjusting the rate limits for better performance or resilience.'
     );
   } else {
     console.log(
       greenBold(
-        "Test concluded: No rate limiting detected within the tested range."
+        'Test concluded: No rate limiting detected within the tested range.'
       )
     );
   }
@@ -52,10 +52,10 @@ async function adaptiveRateLimitingTest(returnToTestMenu) {
 
 async function sendGraphQLRequest(url, query) {
   const response = await fetch(url, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
     },
     body: JSON.stringify({ query }),
   });

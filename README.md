@@ -1,24 +1,16 @@
-<img src="./assets/qevlar_github_banner.png" />
+![Qevlar logo](./assets/qevlar_github-banner.png)
 
 <h1 align="center">Welcome to Qevlar</h1>
 <p>
   <a href="https://www.npmjs.com/package/qevlar" target="_blank">
     <img alt="Version" src="https://img.shields.io/npm/v/qevlar.svg">
   </a>
-  <a href="https://github.com/oslabs-beta/Qevlar#readme" target="_blank">
-    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
-  </a>
   <a href="https://github.com/oslabs-beta/Qevlar/graphs/commit-activity" target="_blank">
     <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
-  </a>
-  <a href="https://github.com/oslabs-beta/Qevlar/blob/master/LICENSE" target="_blank">
-    <img alt="License: ISC" src="https://img.shields.io/github/license/oslabs-beta/qevlar" />
   </a>
 </p>
 
 > GraphQL Security Testing Library
-
-![Qevlar logo](./assets/qevlar_github-banner.png)
 
 <!--
 Banner Image
@@ -34,48 +26,66 @@ Show support
 
 -->
 
-### [Website: qevlar.dev](qevlar.dev)
+##
 
-## Install
+### [qevlar.dev](qevlar.dev)
+
+Qevlar is a dependency-free security testing library for GraphQL APIs that runs directly from your CLI. It assesses vulnerabilities to a multitude of DoS attacks, malicious SQL/NoSQL injections, and more.
+
+## Test Overview
+
+#### Select test from test menu:
+
+![Test Menu](./assets/qevlar_test_menu.png)
+
+#### Query depth limiting test example:
+
+![Depth Limit Test Snippet](./assets/qevlar_depth_limit_snippet.png)
+
+#### SQL injection test example:
+
+![SQL Test Snippet](./assets/qevlar_sql_injection_snippet.png)
+
+#### Rate limiting test example:
+
+![Rate Limit Test Snippet](./assets/qevlar_rate_limit_snippet.png)
+
+## Installation
 
 ```sh
 npm install qevlar
 ```
 
-## Usage
+## Setup
 
-```sh
+1. Run start command:
+
+```
 npm run qevlar
 ```
 
-## Samples
-
-```sh
-
-```
-
-## Author
-
-👤 **Joshua McDaniel jwilliammcdaniel@gmail.com, Conor Bell conorbell27@gmail.com, Hyung Noh johnhyungilnoh@gmail.com, Landon Osteen landonwyatteosteen@gmail.com**
-
-- Github: [@oslabs-beta](https://github.com/oslabs-beta)
-- LinkedIn: [@https:\/\/www.linkedin.com\/company\/qevlarxyz\/about\/](https://linkedin.com/in/https://www.linkedin.com/company/qevlarxyz/about/)
+2. To manually cust
+3. Customize the config to meet your needs or select 'Generate Config' to submit your API url and have us do it for you.
+4. Select desired test
 
 ## Contributing
 
 Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/oslabs-beta/Qevlar/issues). You can also take a look at the [contributing guide](https://github.com/oslabs-beta/Qevlar/blob/master/CONTRIBUTING.md).
 
-## Meet the Team
+## Meet the team 🧑‍🚀
 
-[Joshua McDaniel](https://github.com/joshuamcdaniel95)
-[Conor Bell](https://github.com/conorbell),
-[Hyung Noh](https://github.com/johniskorean),
-[Landon Osteen](https://github.com/LandonOsteen)<br />
+Joshua McDaniel [GitHub](https://github.com/joshuamcdaniel95) | [LinkedIn](https://www.linkedin.com/in/joshuamcdanielxyz/) | [Email](jwilliammcdaniel@gmail.com)<br />
+Conor Bell [GitHub](https://github.com/conorbell) | [LinkedIn](https://www.linkedin.com/in/conor-bell/) | [Email](conorbell27@gmail.com)<br />
+Hyung Noh [GitHub](https://github.com/johniskorean) | [LinkedIn](https://www.linkedin.com/in/johniskorean/) | [Email](johnhyungilnoh@gmail.com)<br />
+Landon Osteen [GitHub](https://github.com/LandonOsteen) | [LinkedIn](https://www.linkedin.com/in/landonosteen/) | [Email](landonwyatteosteen@gmail.com)
+<br />
+<br />
+We're just a couple devs who love open-source solutions.
+
+GitHub stars are welcomed, but really we're happy just building things people want to use.
+
+Check Qevlar out on LinkedIn [here](https://www.linkedin.com/company/qevlarxyz/about/).
 
 ## License
 
-This project is [ISC](https://github.com/oslabs-beta/Qevlar/blob/master/LICENSE) licensed.
-
-## Show your support
-
-We're just a couple devs who love open-source solutions. GitHub stars are very welcomed, but really, we're happy just building things you wanna use.
+_This project is [ISC](https://github.com/oslabs-beta/Qevlar/blob/master/LICENSE) licensed._

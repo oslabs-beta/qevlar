@@ -1,14 +1,14 @@
-const config = require("./qevlarConfig.json");
-const readline = require("readline");
-const fs = require("fs");
-const path = require("path");
+const config = require('./qevlarConfig.json');
+const readline = require('readline');
+const fs = require('fs');
+const path = require('path');
 
 //Find match between types and types referenced in fields to populate CIRCULAR_REF_FIELD in qevlarConfig.json
 const getCircularRefField = (schema) => {
   const visited = new Set();
   let circularRef = null;
   schema.types.forEach((type) => {
-    if (type.description === "Root Query") {
+    if (type.description === 'Root Query') {
       type.fields.forEach((field) => {
         if (field.type.name) {
           visited.add(field.type.name);
@@ -40,7 +40,7 @@ const getTopAndSubField = (schema) => {
   const circularRefField = getCircularRefField(schema.data.__schema);
 
   types.forEach((type) => {
-    if (type.name === "Query") {
+    if (type.name === 'Query') {
       rootQuery = type;
     }
   });
@@ -76,27 +76,28 @@ const introspectionQuery = `{
 // Dynamically generate qevlarConfig.json
 const modifyConig = () => {
   fs.writeFile(
-    path.join(__dirname, "./qevlarConfig.json"),
+    path.join(__dirname, './qevlarConfig.json'),
     JSON.stringify(config, null, 2),
     (err) => {
       if (err) {
-        console.log("error writing to qevlarConfig.json:", err);
+        console.log('error writing to qevlarConfig.json:', err);
       } else {
-        console.log("qevlarConfig.json updated successfully!");
+        console.log('qevlarConfig.json updated successfully!');
       }
     }
   );
+  return 'success';
 };
 
-const getSchema = (url) => {
+const getSchema = (url, returnToTestMenu) => {
   config.API_URL = url;
   return fetch(url, {
-    method: "POST",
-    headers: { "Content-type": "application/json" },
+    method: 'POST',
+    headers: { 'Content-type': 'application/json' },
     body: JSON.stringify({ query: introspectionQuery }),
   })
     .then((res) => {
-      console.log("res status", res.status);
+      console.log('res status', res.status);
       if (res.status === 200) {
         return res.json();
       }
@@ -105,10 +106,10 @@ const getSchema = (url) => {
       getTopAndSubField(data);
 
       modifyConig();
-      return "sucess";
+      if (returnToTestMenu) returnToTestMenu();
     })
     .catch((error) => {
-      console.log("error", error);
+      console.log('error', error);
     });
 };
 
