@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to qevlar 👋</h1>
+<h1 align="center">Welcome to Qevlar</h1>
 <p>
   <a href="https://www.npmjs.com/package/qevlar" target="_blank">
     <img alt="Version" src="https://img.shields.io/npm/v/qevlar.svg">
@@ -16,12 +16,28 @@
 
 > GraphQL Security Testing Library
 
-### 🏠 [Homepage](qevlar.dev)
+![Qevlar logo](./assets/qevlar_github-banner.png)
+
+<!--
+Banner Image
+Short descrition of the product
+Test Overview Section w/snippets
+Install
+Setup section
+Contribution
+Future Direction
+Meet the Team
+License
+Show support
+
+-->
+
+### [Website: qevlar.dev](qevlar.dev)
 
 ## Install
 
 ```sh
-npm install
+npm install qevlar
 ```
 
 ## Usage
@@ -30,25 +46,34 @@ npm install
 npm run qevlar
 ```
 
+## Samples
+
+```sh
+
+```
+
 ## Author
 
 👤 **Joshua McDaniel jwilliammcdaniel@gmail.com, Conor Bell conorbell27@gmail.com, Hyung Noh johnhyungilnoh@gmail.com, Landon Osteen landonwyatteosteen@gmail.com**
 
-* Github: [@oslabs-beta](https://github.com/oslabs-beta)
-* LinkedIn: [@https:\/\/www.linkedin.com\/company\/qevlarxyz\/about\/](https://linkedin.com/in/https:\/\/www.linkedin.com\/company\/qevlarxyz\/about\/)
+- Github: [@oslabs-beta](https://github.com/oslabs-beta)
+- LinkedIn: [@https:\/\/www.linkedin.com\/company\/qevlarxyz\/about\/](https://linkedin.com/in/https://www.linkedin.com/company/qevlarxyz/about/)
 
-## 🤝 Contributing
+## Contributing
 
 Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/oslabs-beta/Qevlar/issues). You can also take a look at the [contributing guide](https://github.com/oslabs-beta/Qevlar/blob/master/CONTRIBUTING.md).
 
-## Show your support
+## Meet the Team
 
-Give a ⭐️ if this project helped you!
+[Joshua McDaniel](https://github.com/joshuamcdaniel95)
+[Conor Bell](https://github.com/conorbell),
+[Hyung Noh](https://github.com/johniskorean),
+[Landon Osteen](https://github.com/LandonOsteen)<br />
 
-## 📝 License
+## License
 
-Copyright © 2024 [Joshua McDaniel jwilliammcdaniel@gmail.com, Conor Bell conorbell27@gmail.com, Hyung Noh johnhyungilnoh@gmail.com, Landon Osteen landonwyatteosteen@gmail.com](https://github.com/oslabs-beta).<br />
 This project is [ISC](https://github.com/oslabs-beta/Qevlar/blob/master/LICENSE) licensed.
 
-***
-_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
+## Show your support
+
+We're just a couple devs who love open-source solutions. GitHub stars are very welcomed, but really, we're happy just building things you wanna use.
