@@ -1,44 +1,33 @@
-#!/usr/bin/env node // => script to remove .js from file call
+#!/usr/bin/env node
 
-const {
-  whiteOut,
-  redBold,
-  darkHighlight,
-  bold,
-  underlined,
-  darkBold,
-  yellowBold,
-} = require("./color.js");
+const { redBold, bold, darkBold, yellowBold } = require("./color.js");
 const readline = require("readline");
 const qevlarLogo = `
 
- ██████  ███████ ██    ██ ██       █████  ██████ 
-██    ██ ██      ██    ██ ██      ██   ██ ██   ██ 
-██    ██ █████   ██    ██ ██      ███████ ██████  
-██ ▄▄ ██ ██       ██  ██  ██      ██   ██ ██   ██ 
- ██████  ███████   ████   ███████ ██   ██ ██   ██ 
-    ▀▀                                            
+ ██████  ███████ ██    ██ ██       █████  ██████
+██    ██ ██      ██    ██ ██      ██   ██ ██   ██
+██    ██ █████   ██    ██ ██      ███████ ██████
+██ ▄▄ ██ ██       ██  ██  ██      ██   ██ ██   ██
+ ██████  ███████   ████   ███████ ██   ██ ██   ██
+    ▀▀
 `;
 
-const { fieldDuplicationTest } = require("./src/tests/fieldDuplicationTest.js");
-const {
-  adaptiveRateLimitingTest,
-} = require("./src/tests/adaptiveRateLimitingTest.js");
-const depthLimitTest = require("./src/tests/depthLimitTests.js");
-const rateLimitTest = require("./src/tests/rateLimitTest.js");
-const getSchema = require("./src/getSchema.js");
-const { batchTest } = require("./src/tests/queryBatchTest.js");
-
 const maliciousInjectionTest = require("./src/tests/maliciousInjectionTests.js");
-//object of tests
+const fieldDuplicationTest = require("./src/tests/fieldDuplicationTest.js");
+const depthLimitTest = require("./src/tests/depthLimitTests.js");
+const adaptiveRateLimitingTest = require("./src/tests/adaptiveRateLimitingTest.js");
+const rateLimitTest = require("./src/tests/rateLimitTest.js");
+const batchTest = require("./src/tests/queryBatchTest.js");
+const getSchema = require("./src/getSchema.js");
+
 const tests = {
   0: {
     name: "Generate Config",
     function: generateConfig,
   },
   1: {
-    name: "Field Duplication Test",
-    function: fieldDuplicationTest,
+    name: "Rate Limit Test",
+    function: rateLimitTest,
   },
   2: {
     name: "Adaptive Rate Limiting Test",
@@ -53,8 +42,8 @@ const tests = {
     function: depthLimitTest.incremental,
   },
   5: {
-    name: "Rate Limit Test",
-    function: rateLimitTest,
+    name: "Field Duplication Test",
+    function: fieldDuplicationTest,
   },
   6: {
     name: "Query Batch Test",
@@ -65,34 +54,30 @@ const tests = {
     function: maliciousInjectionTest.SQL,
   },
   8: {
-    name: "Cross-site Scripting Injection Test",
+    name: "NoSQL Malicious Injection Test",
+    function: maliciousInjectionTest.NoSQL,
+  },
+  9: {
+    name: "Cross-Site Scripting Injection Test",
     function: maliciousInjectionTest.XSS,
+  },
+  10: {
+    name: "OS Command Injection Test",
+    function: maliciousInjectionTest.OS,
   },
 };
 
-//runTests function
+// To return to test menu after test completion
 function runTest(testKey, rl) {
-  //i: testKey, readline module
-  //o: test
-
-  //prints message to user indicating which test is being run
   console.log(`\nRunning ${tests[testKey].name}...\n`);
-
-  //match testKey param to key in tests obj and invoke its function value
   tests[testKey].function(() => {
-    //after test is run, print message to user
     console.log("Choose another test or press Q to exit.");
-    rl.close(); // Close the current readline interface
-    listTestsAndRunSelection(); // Return to the main menu
+    rl.close();
+    listTestsAndRunSelection();
   });
 }
 
-//higher order function for listing and running tests
 function listTestsAndRunSelection() {
-  //i: none
-  //o: list of tests to choose from
-
-  //print welcome message
   console.log(
     bold(
       "\n\n><><><><><>< " +
@@ -100,91 +85,57 @@ function listTestsAndRunSelection() {
         " ><><><><><><\n"
     )
   );
-
-  //print list of all available tests
   console.log(yellowBold("\nAvailable Tests:"));
-
-  //styling on message in terminal
   console.log(darkBold("═══════════════════════════════"));
-
-  //iterate through obj using for in loop
-  for (let key in tests) {
-    //print key and test
-    console.log(`${key}: ${tests[key].name}`);
+  for (const test in tests) {
+    console.log(`${test} : ${tests[test].name}`);
   }
-
-  //print quit option
   console.log("Q: Exit qevlar testing library");
-
-  //terminal styling
   console.log(darkBold("═══════════════════════════════"));
 
-  //creating rl object where users will be able to respond to prompts in terminal
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   });
 
-  //question function
   rl.question(
     "\nEnter the number of the test to run or Q to quit: \n",
     (input) => {
-      //i: number or letter
-
-      //handle strings or letters
       const testKey = input.trim().toUpperCase();
-
-      //conditional for handling user input
-      //if testKey is strictly equal to Q
       if (testKey === "Q") {
-        //messages printed to user
         console.log(redBold("\nThank you for using"));
         console.log(`${qevlarLogo}`);
         console.log(redBold("\nExiting..."));
-
-        rl.close(); // Close the readline interface and exit
-
-        //else if key is found in test object
+        rl.close();
       } else if (tests[testKey]) {
-        //invoke runTest function passing in testKey and rl obj
-
-        runTest(testKey, rl); // Pass the readline interface to the runTest function
-
-        //if number is not found in test obj
+        runTest(testKey, rl);
       } else {
-        //print invalid selection
         console.log("Invalid selection.");
-
-        //close interface
-        rl.close(); // Close the readline interface and show the menu again
-
-        //re-open interface
+        rl.close();
         listTestsAndRunSelection();
       }
     }
   );
 }
 
+// To auto-generate qevlarConfig.json
 async function generateConfig() {
-  console.log("i was run!");
   return new Promise((resolve, reject) => {
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
     });
-
     rl.question("\nPlease submit the url to your API:\n", async (apiUrl) => {
       try {
         const result = await getSchema(apiUrl);
-
         if (result === "success") {
           rl.close();
-          resolve(); // Resolve the promise when done
+          resolve();
         }
       } catch (error) {
         console.log("error in getSchema", error);
         rl.close();
-        reject(error); // Reject the promise if there's an error
+        reject(error);
       }
     });
   });

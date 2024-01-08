@@ -1,7 +1,8 @@
-const config = require("../qevlarConfig.json");
 const { greenBold, highlight, green } = require("../../color");
-const validateConfig = require("../tests/configValidation");
+const config = require("../qevlarConfig.json");
+const validateConfig = require("../../__tests__/validateConfig");
 
+// Tests from INITIAL_RATE up to QUERY_RATE_LIMIT at each INCREMENT
 async function adaptiveRateLimitingTest(returnToTestMenu) {
   validateConfig(config);
 
@@ -66,4 +67,4 @@ async function sendGraphQLRequest(url, query) {
   return response.json();
 }
 
-module.exports = { adaptiveRateLimitingTest };
+module.exports = adaptiveRateLimitingTest;
