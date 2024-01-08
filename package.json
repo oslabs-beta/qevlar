@@ -23,5 +23,8 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/oslabs-beta/Qevlar/issues"
+  },
+  "dependencies": {
+    "readme-md-generator": "^1.0.0"
   }
 }
