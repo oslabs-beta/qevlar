@@ -64,13 +64,24 @@ npm install qevlar
 npm run qevlar
 ```
 
-2. To manually cust
-3. Customize the config to meet your needs or select 'Generate Config' to submit your API url and have us do it for you.
-4. Select desired test
+2. To manually customize config, edit the relevant fields in `qevlarConfig.json`. It is initialized
+3. To generate `qevlarConfig.json` automatically, select 0 in your CLI and submit your API's URL when prompted. This will introspect your Graph QL API, aquiring field names, then automatically update `qevlarConfig.json`.
+4. After, select the test you want to run. Results will be displayed in your CLI.
 
 ## Contributing
 
-Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/oslabs-beta/Qevlar/issues). You can also take a look at the [contributing guide](https://github.com/oslabs-beta/Qevlar/blob/master/CONTRIBUTING.md).
+Contributions, issues and feature requests are welcome!<br />
+
+### Branch management
+
+Please submit any pull requests to the dev branch. All changes will be reviewed before merging by OSLabs and prior contributors.
+
+### Bugs and suggestions
+
+For help with existing issues, please read our GitHub [issues page](https://github.com/oslabs-beta/qevlar/issues).
+If you cannot find support in the issues page, please file a report on the same issues page.
+
+Suggestions and other feedback are more than welcome.
 
 ## Meet the team 🧑‍🚀
 
