@@ -5,6 +5,7 @@
   "description": "GraphQL Security Testing Library",
   "files": [
     "**/*.js",
+    "qevlarConfig.json",
     "qevlar"
   ],
   "keywords": [
