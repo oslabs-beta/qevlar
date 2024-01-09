@@ -79,7 +79,7 @@ npm run qevlar
 ```
 
 3. To generate `qevlarConfig.json` automatically, select `0` in your CLI and submit your API's URL when prompted. This will introspect your Graph QL API, aquiring field names, then automatically update `qevlarConfig.json`.
-4. After, select the test you want to run. Results will be displayed in your CLI.
+4. After, select the test you want to run. Results will be displayed in your CLI!
 
 ## Contributing
 
