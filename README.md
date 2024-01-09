@@ -26,7 +26,7 @@ Easily choose which tests to run, right from your CLI.
 
 #### Query depth limiting test example:
 
-Tests each depth level up to QUERY_DEPTH_LIMIT.
+Tests each depth level up to `QUERY_DEPTH_LIMIT`.
 
 ![Depth Limit Test Snippet](./assets/qevlar_depth_limit_snippet.png)
 
@@ -38,7 +38,7 @@ Tests vulnerability to 100s of malicous SQL injection payloads.
 
 #### Rate limiting test example:
 
-Tests from INITIAL_RATE up to QUERY_RATE_LIMIT at each INCREMENT.
+Tests from `INITIAL_RATE` up to `QUERY_RATE_LIMIT` at each `INCREMENT`.
 
 ![Rate Limit Test Snippet](./assets/qevlar_rate_limit_snippet.png)
 
