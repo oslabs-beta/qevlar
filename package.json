@@ -1,7 +1,7 @@
 {
   "name": "qevlar",
   "displayName": "Qevlar",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "GraphQL Security Testing Library",
   "files": [
     "**/*.js",
@@ -17,6 +17,7 @@
   "icon": "assets/qevlar-logo-black.png",
   "main": "qevlar",
   "scripts": {
+    "postinstall": "node scripts/postInstall.js",
     "start": "qevlar",
     "qevlar": "qevlar"
   },
@@ -28,8 +29,5 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/oslabs-beta/Qevlar/issues"
-  },
-  "dependencies": {
-    "readme-md-generator": "^1.0.0"
   }
 }
