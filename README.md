@@ -10,22 +10,6 @@
   </a>
 </p>
 
-> GraphQL Security Testing Library
-
-<!--
-Banner Image
-Short descrition of the product
-Test Overview Section w/snippets
-Install
-Setup section
-Contribution
-Future Direction
-Meet the Team
-License
-Show support
-
--->
-
 ##
 
 ### [qevlar.dev](qevlar.dev)
@@ -36,17 +20,25 @@ Qevlar is a dependency-free security testing library for GraphQL APIs that runs 
 
 #### Select test from test menu:
 
+Easily choose which tests to run, right from your CLI.
+
 ![Test Menu](./assets/qevlar_test_menu.png)
 
 #### Query depth limiting test example:
+
+Tests each depth level up to QUERY_DEPTH_LIMIT.
 
 ![Depth Limit Test Snippet](./assets/qevlar_depth_limit_snippet.png)
 
 #### SQL injection test example:
 
+Tests vulnerability to 100s of malicous SQL injection payloads.
+
 ![SQL Test Snippet](./assets/qevlar_sql_injection_snippet.png)
 
 #### Rate limiting test example:
+
+Tests from INITIAL_RATE up to QUERY_RATE_LIMIT at each INCREMENT.
 
 ![Rate Limit Test Snippet](./assets/qevlar_rate_limit_snippet.png)
 
@@ -64,8 +56,29 @@ npm install qevlar
 npm run qevlar
 ```
 
-2. To manually customize config, edit the relevant fields in `qevlarConfig.json`. It is initialized
-3. To generate `qevlarConfig.json` automatically, select 0 in your CLI and submit your API's URL when prompted. This will introspect your Graph QL API, aquiring field names, then automatically update `qevlarConfig.json`.
+2. To manually customize config, edit the relevant fields in `qevlarConfig.json`. It's initialized as:
+
+```
+{
+  "ANY_TOP_LEVEL_FIELD_ID": "",
+  "API_URL": "",
+  "BATCH_SIZE": 10,
+  "CIRCULAR_REF_FIELD": "",
+  "INCREMENT": 10,
+  "INITIAL_RATE": 10,
+  "NO_SQL": false,
+  "QUERY_DEPTH_LIMIT": 5,
+  "QUERY_RATE_LIMIT": 100,
+  "SQL": false,
+  "SQL_COLUMN_NAME": "",
+  "SQL_TABLE_NAME": "",
+  "SUB_FIELD": "id",
+  "TIME_WINDOW": 1000,
+  "TOP_LEVEL_FIELD": ""
+}
+```
+
+3. To generate `qevlarConfig.json` automatically, select `0` in your CLI and submit your API's URL when prompted. This will introspect your Graph QL API, aquiring field names, then automatically update `qevlarConfig.json`.
 4. After, select the test you want to run. Results will be displayed in your CLI.
 
 ## Contributing
@@ -82,6 +95,15 @@ For help with existing issues, please read our GitHub [issues page](https://gith
 If you cannot find support in the issues page, please file a report on the same issues page.
 
 Suggestions and other feedback are more than welcome.
+
+## Future Direction
+
+- Perform query cost analysis, allowing addition of cost limiting tests to the library
+- Package security solutions to these attacks in their own library
+- Introspection Tests
+- Jest/End-to-end testing
+- GUI standalone application to run tests from
+- Authentication/Authorization
 
 ## Meet the team 🧑‍🚀
 
