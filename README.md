@@ -107,10 +107,10 @@ Suggestions and other feedback are more than welcome.
 
 ## Meet the team 🧑‍🚀
 
-Joshua McDaniel [GitHub](https://github.com/joshuamcdaniel95) | [LinkedIn](https://www.linkedin.com/in/joshuamcdanielxyz/) | [Email](jwilliammcdaniel@gmail.com)<br />
-Conor Bell [GitHub](https://github.com/conorbell) | [LinkedIn](https://www.linkedin.com/in/conor-bell/) | [Email](conorbell27@gmail.com)<br />
-Hyung Noh [GitHub](https://github.com/johniskorean) | [LinkedIn](https://www.linkedin.com/in/johniskorean/) | [Email](johnhyungilnoh@gmail.com)<br />
-Landon Osteen [GitHub](https://github.com/LandonOsteen) | [LinkedIn](https://www.linkedin.com/in/landonosteen/) | [Email](landonwyatteosteen@gmail.com)
+Joshua McDaniel [GitHub](https://github.com/joshuamcdaniel95) | [LinkedIn](https://www.linkedin.com/in/joshuamcdanielxyz/) | [Email](mailto:jwilliammcdaniel@gmail.com)<br />
+Conor Bell [GitHub](https://github.com/conorbell) | [LinkedIn](https://www.linkedin.com/in/conor-bell/) | [Email](mailto:conorbell27@gmail.com)<br />
+Hyung Noh [GitHub](https://github.com/johniskorean) | [LinkedIn](https://www.linkedin.com/in/johniskorean/) | [Email](mailto:johnhyungilnoh@gmail.com)<br />
+Landon Osteen [GitHub](https://github.com/LandonOsteen) | [LinkedIn](https://www.linkedin.com/in/landonosteen/) | [Email](mailto:landonwyatteosteen@gmail.com)
 <br />
 <br />
 We're just a couple devs who love open-source solutions.
