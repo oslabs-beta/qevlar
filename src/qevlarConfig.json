@@ -1,8 +1,8 @@
 {
   "ANY_TOP_LEVEL_FIELD_ID": "",
-  "API_URL": "http://localhost:3000/graphql",
+  "API_URL": "",
   "BATCH_SIZE": 10,
-  "CIRCULAR_REF_FIELD": "Food",
+  "CIRCULAR_REF_FIELD": "",
   "INCREMENT": 10,
   "INITIAL_RATE": 10,
   "NO_SQL": false,
@@ -11,7 +11,7 @@
   "SQL": false,
   "SQL_COLUMN_NAME": "",
   "SQL_TABLE_NAME": "",
-  "SUB_FIELD": "id",
+  "SUB_FIELD": "",
   "TIME_WINDOW": 1000,
-  "TOP_LEVEL_FIELD": "meal"
+  "TOP_LEVEL_FIELD": ""
 }
