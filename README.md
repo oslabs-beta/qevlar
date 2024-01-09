@@ -18,25 +18,25 @@ Qevlar is a dependency-free security testing library for GraphQL APIs that runs 
 
 ## Test Overview
 
-#### Select test from test menu:
+### Select test from test menu:
 
 Easily choose which tests to run, right from your CLI.
 
 ![Test Menu](./assets/qevlar_test_menu.png)
 
-#### Query depth limiting test example:
+### Query depth limiting test example:
 
 Tests each depth level up to `QUERY_DEPTH_LIMIT`.
 
 ![Depth Limit Test Snippet](./assets/qevlar_depth_limit_snippet.png)
 
-#### SQL injection test example:
+### SQL injection test example:
 
 Tests vulnerability to 100s of malicous SQL injection payloads.
 
 ![SQL Test Snippet](./assets/qevlar_sql_injection_snippet.png)
 
-#### Rate limiting test example:
+### Rate limiting test example:
 
 Tests from `INITIAL_RATE` up to `QUERY_RATE_LIMIT` at each `INCREMENT`.
 
