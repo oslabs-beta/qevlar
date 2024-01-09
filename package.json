@@ -1,7 +1,7 @@
 {
   "name": "qevlar",
   "displayName": "Qevlar",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "GraphQL Security Testing Library",
   "files": [
     "**/*.js",
@@ -21,6 +21,7 @@
     "start": "qevlar",
     "qevlar": "qevlar"
   },
+  "homepage": "qevlar.dev",
   "repository": {
     "type": "git",
     "url": "https://github.com/oslabs-beta/Qevlar"
