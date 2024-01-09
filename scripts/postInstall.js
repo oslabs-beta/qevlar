@@ -1,10 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 
-const scriptName = 'qevlar';
+const scriptName = 'test';
 const scriptCommand = 'node node_modules/qevlar/scripts/qevlar';
 
-const packageJsonPath = '../../../package.json';
+const packageJsonPath = path.join(process.cwd(), 'package.json');
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath));
 
 packageJson.scripts[scriptName] = scriptCommand;
