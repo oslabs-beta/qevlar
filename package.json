@@ -3,6 +3,10 @@
   "displayName": "Qevlar",
   "version": "1.0.1",
   "description": "GraphQL Security Testing Library",
+  "files": [
+    "**/*.js",
+    "qevlar"
+  ],
   "keywords": [
     "graphql",
     "API",
