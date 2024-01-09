@@ -1,7 +1,7 @@
 ![Qevlar logo](./assets/qevlar_github-banner.png)
 
 <h1 align="center">Welcome to Qevlar</h1>
-<p>
+<p align="center">
   <a href="https://www.npmjs.com/package/qevlar" target="_blank">
     <img alt="Version" src="https://img.shields.io/npm/v/qevlar.svg">
   </a>
