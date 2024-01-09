@@ -20,9 +20,9 @@ Qevlar is a dependency-free security testing library for GraphQL APIs that runs 
 
 ### Select test from test menu:
 
-Easily choose which tests to run, right from your CLI.
+Easily choose which tests to run, right from your CLI, featuring built-in type checking.
 
-![Test Menu](./assets/qevlar_test_menu.png)
+![Test Menu](./assets/qevlar_test_menufinal.png)
 
 ### Query depth limiting test example:
 
