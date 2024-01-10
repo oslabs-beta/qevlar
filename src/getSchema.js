@@ -76,7 +76,7 @@ const introspectionQuery = `{
 // Dynamically generate qevlarConfig.json
 const modifyConig = () => {
 	fs.writeFile(
-		path.join(__dirname, './qevlarConfig.json'),
+		path.join(__dirname, '../qevlarConfig.json'),
 		JSON.stringify(config, null, 2),
 		(err) => {
 			if (err) {
