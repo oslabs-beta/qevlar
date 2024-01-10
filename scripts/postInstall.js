@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const scriptName = 'run';
-const scriptCommand = 'node node_modules/qevlar/scripts/run';
+const scriptName = 'qevlar';
+const scriptCommand = 'node node_modules/qevlar';
 
 const packageJsonPath = path.join('../../', 'package.json');
 console.log(packageJsonPath);
