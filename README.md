@@ -56,7 +56,7 @@ npm install qevlar
 npm run qevlar
 ```
 
-2. To manually customize config, edit the relevant fields in `qevlarConfig.json`. It's initialized as:
+2. To manually customize config, edit the relevant fields in `qevlarConfig.json` located in `node_modules/qevlar`. It's initialized as:
 
 ```
 {

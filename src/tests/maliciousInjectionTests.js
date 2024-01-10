@@ -1,5 +1,5 @@
 const { greenBold, red, redBold, underlined } = require("../../color");
-const config = require("../qevlarConfig.json");
+const config = require("../../qevlarConfig.json");
 const validateConfig = require("../../__tests__/validateConfig");
 
 const maliciousInjectionTest = {};
