@@ -53,7 +53,7 @@ npm install qevlar
 1. Run start command:
 
 ```
-npm qevlar
+npm run qevlar
 ```
 
 2. To manually customize config, edit the relevant fields in `qevlarConfig.json`. It's initialized as:
