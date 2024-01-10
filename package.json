@@ -1,7 +1,7 @@
 {
   "name": "qevlar",
   "displayName": "Qevlar",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "GraphQL Security Testing Library",
   "files": [
     "**/*.js",
