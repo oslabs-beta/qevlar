@@ -13,7 +13,8 @@
   "main": "qevlar",
   "scripts": {
     "start": "qevlar",
-    "qevlar": "qevlar"
+    "qevlar": "qevlar",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -26,5 +27,8 @@
   },
   "dependencies": {
     "readme-md-generator": "^1.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
