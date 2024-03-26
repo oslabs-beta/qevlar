@@ -49,6 +49,7 @@ const batchTest = (returnToTestMenu) => {
     })
     .catch((error) => {
       console.error('error encountered: ', error);
+      throw error;
     });
 
   const endTime = Date.now();

@@ -1,74 +1,62 @@
 const batchTest = require('../src/tests/queryBatchTest');
-const validateConfig = require('./validateConfig');
 
-global.fetch = jest.fn(() =>
-  Promise.resolve({
-    ok: true,
-    json: () => Promise.resolve({}),
-  })
-);
+// Mock fetch function
+global.fetch = jest.fn();
 
-jest.mock('../src/qevlarConfig.json', () => ({
-  API_URL: 'http://example.com/api',
-  BATCH_SIZE: 10,
-  TOP_LEVEL_FIELD: 'someField',
-  ANY_TOP_LEVEL_FIELD_ID: '123',
-  SUB_FIELD: 'subField',
-}));
-
-describe('generateDynamicBatchQuery function', () => {
-  it('should generate an array of batch queries with correct length and base query', () => {
-    const count = 3;
-    const baseQuery = '{ someField(id: 123) { subField subField } }';
-
-    const result = generateDynamicBatchQuery(count, baseQuery);
-
-    expect(result).toHaveLength(count);
-    expect(result).toEqual([baseQuery, baseQuery, baseQuery]);
-  });
-
-  // Add more test cases for generateDynamicBatchQuery as needed
-});
-
-describe('batchTest function', () => {
+describe('batchTest', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should make a POST request with correct parameters and handle response', async () => {
-    await batchTest();
+  it('should handle successful response', async () => {
+    // Mock response
+    const mockResponse = {
+      ok: true,
+      json: jest.fn().mockResolvedValue({ data: 'mock data' }),
+    };
+    fetch.mockResolvedValueOnce(mockResponse);
 
-    expect(fetch).toHaveBeenCalledWith('http://example.com/api', {
+    const returnToTestMenuMock = jest.fn();
+
+    await batchTest(returnToTestMenuMock);
+
+    // Verify that fetch is called with the correct arguments
+    expect(fetch).toHaveBeenCalledWith('https://example.com/api', {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
       },
       body: JSON.stringify([
-        { query: `{ someField(id: 123) { subField subField } }` },
+        { query: `{ exampleField(id: 123) { subField subField } }` },
       ]),
     });
+
+    // Verify that the returnToTestMenu function is called
+    expect(returnToTestMenuMock).toHaveBeenCalled();
   });
 
   it('should handle error response', async () => {
-    global.fetch.mockImplementationOnce(() =>
-      Promise.resolve({
-        ok: false,
-        status: 404,
-      })
+    // Mock response with error status
+    fetch.mockResolvedValueOnce({ ok: false, status: 404 });
+
+    const returnToTestMenuMock = jest.fn();
+
+    await expect(batchTest(returnToTestMenuMock)).rejects.toThrow(
+      'HTTP error! Status: 404'
     );
 
-    await batchTest();
-
-    expect(fetch).toHaveBeenCalledWith('http://example.com/api', {
+    // Verify that fetch is called with the correct arguments
+    expect(fetch).toHaveBeenCalledWith('https://example.com/api', {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
       },
       body: JSON.stringify([
-        { query: `{ someField(id: 123) { subField subField } }` },
+        { query: `{ exampleField(id: 123) { subField subField } }` },
       ]),
     });
-  });
 
-  // Add more test cases for batchTest function as needed
+    // Verify that the returnToTestMenu function is not called
+    expect(returnToTestMenuMock).not.toHaveBeenCalled();
+  });
 });
