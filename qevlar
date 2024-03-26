@@ -71,7 +71,6 @@ const tests = {
 // To return to test menu after test completion
 function runTest(testKey, rl) {
   console.log(`\nRunning ${tests[testKey].name}...\n`);
-  console.log('test', tests[testKey]);
   tests[testKey].function(() => {
     console.log('Choose another test or press Q to exit.');
     rl.close();
