@@ -18,6 +18,7 @@ const depthLimitTest = require('./src/tests/depthLimitTests.js');
 const adaptiveRateLimitingTest = require('./src/tests/adaptiveRateLimitingTest.js');
 const rateLimitTest = require('./src/tests/rateLimitTest.js');
 const batchTest = require('./src/tests/queryBatchTest.js');
+console.log('batchTest', batchTest);
 const getSchema = require('./src/getSchema.js');
 
 const tests = {
@@ -70,6 +71,7 @@ const tests = {
 // To return to test menu after test completion
 function runTest(testKey, rl) {
   console.log(`\nRunning ${tests[testKey].name}...\n`);
+  console.log('test', tests[testKey]);
   tests[testKey].function(() => {
     console.log('Choose another test or press Q to exit.');
     rl.close();

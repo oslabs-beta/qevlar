@@ -1,32 +1,74 @@
 const batchTest = require('../src/tests/queryBatchTest');
-const config = require('../src/qevlarConfig.json');
 const validateConfig = require('./validateConfig');
 
-// Mock fetch function
-global.fetch = jest.fn();
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    ok: true,
+    json: () => Promise.resolve({}),
+  })
+);
 
-describe('batchTest', () => {
-  afterEach(() => {
-    jest.clearAllMocks(); // Reset mock fetch calls after each test
+jest.mock('../src/qevlarConfig.json', () => ({
+  API_URL: 'http://example.com/api',
+  BATCH_SIZE: 10,
+  TOP_LEVEL_FIELD: 'someField',
+  ANY_TOP_LEVEL_FIELD_ID: '123',
+  SUB_FIELD: 'subField',
+}));
+
+describe('generateDynamicBatchQuery function', () => {
+  it('should generate an array of batch queries with correct length and base query', () => {
+    const count = 3;
+    const baseQuery = '{ someField(id: 123) { subField subField } }';
+
+    const result = generateDynamicBatchQuery(count, baseQuery);
+
+    expect(result).toHaveLength(count);
+    expect(result).toEqual([baseQuery, baseQuery, baseQuery]);
   });
 
-  it('should call fetch with the correct parameters', async () => {
-    // Mock returnToTestMenu function
-    const returnToTestMenu = jest.fn();
+  // Add more test cases for generateDynamicBatchQuery as needed
+});
 
-    // Mock response from fetch
-    const mockResponse = { ok: true, json: () => Promise.resolve({}) };
-    global.fetch.mockResolvedValueOnce(mockResponse);
+describe('batchTest function', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-    await batchTest(returnToTestMenu);
+  it('should make a POST request with correct parameters and handle response', async () => {
+    await batchTest();
 
-    // Verify fetch was called with the correct URL, method, headers, and body
-    expect(fetch).toHaveBeenCalledWith(config.API_URL, {
+    expect(fetch).toHaveBeenCalledWith('http://example.com/api', {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
       },
-      body: expect.any(String), // Assuming batchedQueries will be stringified
+      body: JSON.stringify([
+        { query: `{ someField(id: 123) { subField subField } }` },
+      ]),
     });
   });
+
+  it('should handle error response', async () => {
+    global.fetch.mockImplementationOnce(() =>
+      Promise.resolve({
+        ok: false,
+        status: 404,
+      })
+    );
+
+    await batchTest();
+
+    expect(fetch).toHaveBeenCalledWith('http://example.com/api', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify([
+        { query: `{ someField(id: 123) { subField subField } }` },
+      ]),
+    });
+  });
+
+  // Add more test cases for batchTest function as needed
 });

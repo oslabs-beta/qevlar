@@ -1,5 +1,5 @@
-const config = require("../qevlarConfig.json");
-const validateConfig = require("../../__tests__/validateConfig");
+const config = require('../qevlarConfig.json');
+const validateConfig = require('../../__tests__/validateConfig');
 
 const batchTest = (returnToTestMenu) => {
   const url = config.API_URL;
@@ -23,15 +23,21 @@ const batchTest = (returnToTestMenu) => {
 
   const batchedQueries = newBatch.map((query) => ({ query }));
 
+  const startTime = Date.now();
+
   fetch(url, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-type": "application/json",
+      'Content-type': 'application/json',
     },
     body: JSON.stringify(batchedQueries),
   })
     .then((res) => {
-      console.log("res", res);
+      const endTime = Date.now();
+      const latency = endTime - startTime;
+      console.log('Request completed in', latency, 'milliseconds');
+
+      console.log('res', res);
 
       if (!res.ok) {
         throw new Error(`HTTP error! Status: ${res.status}`);
@@ -39,11 +45,17 @@ const batchTest = (returnToTestMenu) => {
       return res.json();
     })
     .then((data) => {
-      console.log("batch res", data);
+      console.log('batch res', data);
     })
     .catch((error) => {
-      console.error("error encountered: ", error);
+      console.error('error encountered: ', error);
     });
+
+  const endTime = Date.now();
+
+  const latency = endTime - startTime;
+
+  console.log('Request completed in', latency, 'milliseconds');
 
   if (returnToTestMenu) returnToTestMenu();
 };
