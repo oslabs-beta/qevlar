@@ -56,7 +56,7 @@ npm install qevlar
 npm run qevlar
 ```
 
-2. To manually customize config, edit the relevant fields in `qevlarConfig.json`. It's initialized as:
+2. To manually customize config, edit the relevant fields in `qevlarConfig.json` located in `node_modules/qevlar`. It's initialized as:
 
 ```
 {
@@ -79,7 +79,7 @@ npm run qevlar
 ```
 
 3. To generate `qevlarConfig.json` automatically, select `0` in your CLI and submit your API's URL when prompted. This will introspect your Graph QL API, aquiring field names, then automatically update `qevlarConfig.json`.
-4. After, select the test you want to run. Results will be displayed in your CLI.
+4. After, select the test you want to run. Results will be displayed in your CLI!
 
 ## Contributing
 

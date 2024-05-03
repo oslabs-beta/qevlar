@@ -1,8 +1,13 @@
 {
   "name": "qevlar",
   "displayName": "Qevlar",
-  "version": "1.0.0",
+  "version": "1.0.14",
   "description": "GraphQL Security Testing Library",
+  "files": [
+    "**/*.js",
+    "qevlarConfig.json",
+    "qevlar"
+  ],
   "keywords": [
     "graphql",
     "API",
@@ -12,10 +17,12 @@
   "icon": "assets/qevlar-logo-black.png",
   "main": "qevlar",
   "scripts": {
+    "postinstall": "node scripts/postInstall.js",
     "start": "qevlar",
     "qevlar": "qevlar",
     "test": "jest"
   },
+  "homepage": "qevlar.dev",
   "repository": {
     "type": "git",
     "url": "https://github.com/oslabs-beta/Qevlar"
