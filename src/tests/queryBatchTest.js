@@ -69,7 +69,7 @@ const batchTest = async (returnToTestMenu) => {
   const ninetyFifthPercentile =
     responseTimes[Math.floor(responseTimes.length * 0.97)];
   console.log(
-    yellowBold(`95th Percentile Latency: `) +
+    yellowBold(`97th Percentile Latency: `) +
       highlight(`${ninetyFifthPercentile} milliseconds`)
   );
 
