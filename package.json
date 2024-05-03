@@ -19,7 +19,8 @@
   "scripts": {
     "postinstall": "node scripts/postInstall.js",
     "start": "qevlar",
-    "qevlar": "qevlar"
+    "qevlar": "qevlar",
+    "test": "jest"
   },
   "homepage": "qevlar.dev",
   "repository": {
@@ -30,5 +31,11 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/oslabs-beta/Qevlar/issues"
+  },
+  "dependencies": {
+    "readme-md-generator": "^1.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
