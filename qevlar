@@ -17,8 +17,7 @@ const fieldDuplicationTest = require('./src/tests/fieldDuplicationTest.js');
 const depthLimitTest = require('./src/tests/depthLimitTests.js');
 const adaptiveRateLimitingTest = require('./src/tests/adaptiveRateLimitingTest.js');
 const rateLimitTest = require('./src/tests/rateLimitTest.js');
-const batchTest = require('./src/tests/queryBatchTest.js');
-console.log('batchTest', batchTest);
+const { batchTest } = require('./src/tests/queryBatchTest.js');
 const getSchema = require('./src/getSchema.js');
 
 const tests = {

@@ -1,4 +1,7 @@
-const batchTest = require('../src/tests/queryBatchTest');
+const {
+  batchTest,
+  generateDynamicBatchQuery,
+} = require('../src/tests/queryBatchTest');
 
 // Mock fetch function
 global.fetch = jest.fn();
@@ -58,5 +61,19 @@ describe('batchTest', () => {
 
     // Verify that the returnToTestMenu function is not called
     expect(returnToTestMenuMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('generateDynamicBatchQuery test', () => {
+  it('should generate an array of batch queries based on the count and baseQuery', () => {
+    const count = 3;
+    const baseQuery = { query: 'SELECT * FROM table' };
+
+    const result = generateDynamicBatchQuery(count, baseQuery);
+
+    expect(result).toHaveLength(count);
+    result.forEach((query) => {
+      expect(query).toEqual(baseQuery);
+    });
   });
 });

@@ -2,6 +2,16 @@ const config = require('../qevlarConfig.json');
 const { greenBold, redBold, highlight, yellowBold } = require('../../color');
 const validateConfig = require('../../__tests__/validateConfig');
 
+const generateDynamicBatchQuery = (count, baseQuery) => {
+  const batchQueries = [];
+
+  for (let i = 1; i <= count; i++) {
+    batchQueries.push(baseQuery);
+  }
+
+  return batchQueries;
+};
+
 const batchTest = async (returnToTestMenu) => {
   const url = config.API_URL;
   const batchLength = config.BATCH_SIZE;
@@ -10,16 +20,6 @@ const batchTest = async (returnToTestMenu) => {
   const query = `{ ${config.TOP_LEVEL_FIELD}(id: ${config.ANY_TOP_LEVEL_FIELD_ID}) { ${config.SUB_FIELD} ${config.SUB_FIELD} } }`;
 
   validateConfig(config);
-
-  const generateDynamicBatchQuery = (count, baseQuery) => {
-    const batchQueries = [];
-
-    for (let i = 1; i <= count; i++) {
-      batchQueries.push(baseQuery);
-    }
-
-    return batchQueries;
-  };
 
   const newBatch = generateDynamicBatchQuery(batchLength, query);
 
@@ -67,7 +67,7 @@ const batchTest = async (returnToTestMenu) => {
   // Sort response times to calculate high percentile latency
   responseTimes.sort((a, b) => a - b);
   const ninetyFifthPercentile =
-    responseTimes[Math.floor(responseTimes.length * 0.95)];
+    responseTimes[Math.floor(responseTimes.length * 0.97)];
   console.log(
     yellowBold(`95th Percentile Latency: `) +
       highlight(`${ninetyFifthPercentile} milliseconds`)
@@ -77,4 +77,4 @@ const batchTest = async (returnToTestMenu) => {
   if (returnToTestMenu) returnToTestMenu();
 };
 
-module.exports = batchTest;
+module.exports = { batchTest, generateDynamicBatchQuery };
