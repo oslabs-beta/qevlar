@@ -1,4 +1,4 @@
-const config = require('../qevlarConfig.json');
+const config = require('../../qevlarConfig.json');
 const { greenBold, redBold, highlight, yellowBold } = require('../../color');
 const validateConfig = require('../../__tests__/validateConfig');
 
