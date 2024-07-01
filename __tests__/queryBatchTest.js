@@ -2,78 +2,155 @@ const {
   batchTest,
   generateDynamicBatchQuery,
 } = require('../src/tests/queryBatchTest');
+const config = require('../qevlarConfig.json');
+const validateConfig = require('./validateConfig');
+const { greenBold, redBold, highlight } = require('../color');
 
+jest.mock('../../color', () => ({
+  greenBold: jest.fn((text) => text),
+  redBold: jest.fn((text) => text),
+  highlight: jest.fn((text) => text),
+}));
+
+jest.mock('../qevlarConfig.json', () => ({
+  API_URL: 'http://test-api.com',
+  TOP_LEVEL_FIELD: 'test_field',
+  ANY_TOP_LEVEL_FIELD_ID: '123',
+  CIRCULAR_REF_FIELD: 'circular_field',
+  QUERY_DEPTH_LIMIT: 3,
+}));
 // Mock fetch function
 global.fetch = jest.fn();
 
 describe('batchTest', () => {
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
+    console.log = jest.fn();
   });
 
-  it('should handle successful response', async () => {
-    // Mock response
-    const mockResponse = {
-      ok: true,
-      json: jest.fn().mockResolvedValue({ data: 'mock data' }),
-    };
-    fetch.mockResolvedValueOnce(mockResponse);
+  describe('generateDynamicBatchQuery', () => {
+    it('should generate an array of queries of the given count', () => {
+      const count = 3;
+      const baseQuery = '{ test }';
+      const result = generateDynamicBatchQuery(count, baseQuery);
+      expect(result).toEqual([baseQuery, baseQuery, baseQuery]);
+    });
+  });
 
-    const returnToTestMenuMock = jest.fn();
+  describe('sendBatchQueries', () => {
+    const { sendBatchQueries } = require('../src/tests/batchTest');
 
-    await batchTest(returnToTestMenuMock);
+    it('should return response status and latency on success', async () => {
+      const mockResponse = { status: 200 };
+      global.fetch.mockResolvedValueOnce(mockResponse);
 
-    // Verify that fetch is called with the correct arguments
-    expect(fetch).toHaveBeenCalledWith('https://example.com/api', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify([
-        { query: `{ exampleField(id: 123) { subField subField } }` },
-      ]),
+      const url = 'http://test-api.com';
+      const batchedQueries = [{ query: '{ test }' }];
+
+      const result = await sendBatchQueries(url, batchedQueries);
+
+      expect(result.status).toBe(200);
+      expect(result.latency).toBeGreaterThan(0);
+      expect(result.error).toBeNull();
     });
 
-    // Verify that the returnToTestMenu function is called
-    expect(returnToTestMenuMock).toHaveBeenCalled();
+    it('should return error message and latency on failure', async () => {
+      const mockError = new Error('Fetch failed');
+      global.fetch.mockRejectedValueOnce(mockError);
+
+      const url = 'http://test-api.com';
+      const batchedQueries = [{ query: '{ test }' }];
+
+      const result = await sendBatchQueries(url, batchedQueries);
+
+      expect(result.status).toBe('error');
+      expect(result.latency).toBeGreaterThan(0);
+      expect(result.error).toBe(mockError.message);
+    });
   });
 
-  it('should handle error response', async () => {
-    // Mock response with error status
-    fetch.mockResolvedValueOnce({ ok: false, status: 404 });
+  describe('calculateThroughput', () => {
+    const { calculateThroughput } = require('../src/tests/batchTest');
 
-    const returnToTestMenuMock = jest.fn();
+    it('should calculate throughput correctly', () => {
+      const numBatches = 100;
+      const batchLength = 10;
+      const elapsedTime = 2000; // in milliseconds
 
-    await expect(batchTest(returnToTestMenuMock)).rejects.toThrow(
-      'HTTP error! Status: 404'
-    );
+      const result = calculateThroughput(numBatches, batchLength, elapsedTime);
+      expect(result).toBeCloseTo(50); // batches per second
+    });
+  });
 
-    // Verify that fetch is called with the correct arguments
-    expect(fetch).toHaveBeenCalledWith('https://example.com/api', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify([
-        { query: `{ exampleField(id: 123) { subField subField } }` },
-      ]),
+  describe('calculateStatistics', () => {
+    const { calculateStatistics } = require('../src/tests/batchTest');
+
+    it('should calculate statistics correctly', () => {
+      const times = [10, 20, 30, 40, 50];
+
+      const result = calculateStatistics(times);
+
+      expect(result.min).toBe(10);
+      expect(result.max).toBe(50);
+      expect(result.average).toBe(30);
+      expect(result.median).toBe(30);
+      expect(result.percentile97).toBe(50);
+    });
+  });
+
+  describe('logResults', () => {
+    const { logResults } = require('../src/tests/batchTest');
+
+    it('should log results correctly', () => {
+      const responseTimes = [10, 20, 30, 40, 50];
+      const testPassedCount = 90;
+      const testFailedCount = 10;
+      const errors = ['Error 1', 'Error 2'];
+      const numBatches = 100;
+      const batchLength = 10;
+      const elapsedTime = 2000;
+
+      logResults(
+        responseTimes,
+        testPassedCount,
+        testFailedCount,
+        errors,
+        numBatches,
+        batchLength,
+        elapsedTime
+      );
+
+      expect(console.log).toHaveBeenCalled();
+    });
+  });
+
+  describe('batchTest', () => {
+    it('should execute batch test and log results', async () => {
+      global.fetch
+        .mockResolvedValueOnce({ status: 400 })
+        .mockResolvedValueOnce({ status: 200 });
+
+      const returnToTestMenu = jest.fn();
+
+      await batchTest(returnToTestMenu, 2, 1);
+
+      expect(validateConfig).toHaveBeenCalledWith(config);
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+      expect(console.log).toHaveBeenCalled();
+      expect(returnToTestMenu).toHaveBeenCalled();
     });
 
-    // Verify that the returnToTestMenu function is not called
-    expect(returnToTestMenuMock).not.toHaveBeenCalled();
-  });
-});
+    it('should handle errors during batch test', async () => {
+      global.fetch.mockRejectedValueOnce(new Error('Fetch failed'));
 
-describe('generateDynamicBatchQuery test', () => {
-  it('should generate an array of batch queries based on the count and baseQuery', () => {
-    const count = 3;
-    const baseQuery = { query: 'SELECT * FROM table' };
+      const returnToTestMenu = jest.fn();
 
-    const result = generateDynamicBatchQuery(count, baseQuery);
+      await batchTest(returnToTestMenu, 1, 1);
 
-    expect(result).toHaveLength(count);
-    result.forEach((query) => {
-      expect(query).toEqual(baseQuery);
+      expect(validateConfig).toHaveBeenCalledWith(config);
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+      expect(console.log).toHaveBeenCalled();
+      expect(returnToTestMenu).toHaveBeenCalled();
     });
   });
 });
