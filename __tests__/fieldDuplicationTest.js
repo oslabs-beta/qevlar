@@ -1,50 +1,109 @@
 const fieldDuplicationTest = require('../src/tests/fieldDuplicationTest');
+const config = require('../qevlarConfig.json');
+const validateConfig = require('./validateConfig');
 const { greenBold, redBold, yellowBold, highlight } = require('../color');
-const request = require('supertest');
 
-const config = {
-  TOP_LEVEL_FIELD: 'topField',
-  SUB_FIELD: 'subField',
-  API_URL: 'https://example.com/graphql',
-  INITIAL_RATE: 10,
-  QUERY_RATE_LIMIT: 100,
-  INCREMENT: 10,
-};
+jest.mock('../color', () => ({
+  greenBold: jest.fn((text) => text),
+  redBold: jest.fn((text) => text),
+  highlight: jest.fn((text) => text),
+}));
 
-const server = 'https://example.com/graphql';
+jest.mock('../qevlarConfig.json', () => ({
+  API_URL: 'http://test-api.com',
+  TOP_LEVEL_FIELD: 'test_field',
+  ANY_TOP_LEVEL_FIELD_ID: '123',
+  SUB_FIELD: 'sub_field',
+}));
 
-//Mock fetch
-// global.fetch = jest.fn(() =>
-//   Promise.resolve({
-//     json: () => Promise.resolve({ ok: true }),
-//   })
-// );
+jest.mock('./validateConfig', () => jest.fn());
 
-//Mock console log
-global.console.log = jest.fn();
+// Mock fetch function
+global.fetch = jest.fn();
 
-const query = `{ ${config.TOP_LEVEL_FIELD}(id: ${config.ANY_TOP_LEVEL_FIELD_ID}) { ${config.SUB_FIELD} ${config.SUB_FIELD} } }`;
-
-describe('Field Duplication Unit Test', () => {
-  //reset mocks between tests
-  // beforeEach(() => {
-  //   fetch.mockClear();
-  // });
-
-  //API Rejects duplicate fields
-  test('Should pass test when API Rejects duplicate fields', async () => {
-    // const logSpy = jest.spyOn(global.console, 'log').mockImplentation(() => {});
-
-    // fetch.mockResolvedValue(
-    //   JSON.stringify({
-    //     data: { [config.TOP_LEVEL_FIELD]: { [config.SUB_FIELD]: 'some data' } },
-    //   })
-    // );
-
-    (await request(server).post('/graphql')).send(query).expect(400);
-    // expect(logSpy).toBeCalledWith();
+describe('fieldDuplicationTest', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    console.log = jest.fn();
   });
 
-  //return API returned + string result
-  // test('Test');
+  it('should log failure if API accepts duplicate fields', async () => {
+    const mockResponse = {
+      ok: true,
+      json: jest.fn().mockResolvedValue({ data: 'mockData' }),
+    };
+    global.fetch.mockResolvedValueOnce(mockResponse);
+
+    const returnToTestMenu = jest.fn();
+
+    await fieldDuplicationTest(returnToTestMenu);
+
+    const expectedQuery = `{ test_field(id: 123) { sub_field sub_field } }`;
+
+    expect(global.fetch).toHaveBeenCalledWith(config.API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: expectedQuery }),
+    });
+
+    expect(console.log).toHaveBeenCalledWith(redBold('\nTest failed:'));
+    expect(console.log).toHaveBeenCalledWith(
+      highlight('API accepted duplicate fields.\n')
+    );
+    expect(console.log).toHaveBeenCalledWith(
+      yellowBold('API returned:'),
+      `\n{"data":"mockData"}\n`
+    );
+
+    expect(returnToTestMenu).toHaveBeenCalled();
+  });
+
+  it('should log success if API rejects duplicate fields', async () => {
+    global.fetch.mockRejectedValueOnce(
+      new Error('Network response was not ok.')
+    );
+
+    const returnToTestMenu = jest.fn();
+
+    await fieldDuplicationTest(returnToTestMenu);
+
+    expect(global.fetch).toHaveBeenCalled();
+
+    expect(console.log).toHaveBeenCalledWith(greenBold('\nTest passed:'));
+    expect(console.log).toHaveBeenCalledWith(
+      highlight('API rejected duplicate fields.\n')
+    );
+    expect(console.log).toHaveBeenCalledWith('\nSummary of Error');
+    expect(console.log).toHaveBeenCalledWith(
+      'Error: Network response was not ok.'
+    );
+
+    expect(returnToTestMenu).toHaveBeenCalled();
+  });
+
+  it('should call returnToTestMenu if it is a function', async () => {
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: jest.fn().mockResolvedValue({ data: 'mockData' }),
+    });
+
+    const returnToTestMenu = jest.fn();
+
+    await fieldDuplicationTest(returnToTestMenu);
+
+    expect(returnToTestMenu).toHaveBeenCalled();
+  });
+
+  it('should not call returnToTestMenu if it is not a function', async () => {
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: jest.fn().mockResolvedValue({ data: 'mockData' }),
+    });
+
+    const returnToTestMenu = 'not a function';
+
+    await fieldDuplicationTest(returnToTestMenu);
+
+    expect(returnToTestMenu).not.toBeCalled();
+  });
 });
